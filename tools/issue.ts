@@ -34,11 +34,15 @@ function parseFlags(argv: string[]): Record<string, string | boolean> {
 }
 
 function main() {
-  const fromFlags = parseFlags(process.argv.slice(2)) as Partial<
-    { type: string; title: string; body: string; label: string }
-  >;
+  const fromFlags = parseFlags(process.argv.slice(2)) as Partial<{
+    type: string;
+    title: string;
+    body: string;
+    label: string;
+  }>;
 
-  const type = fromFlags.type ?? prompt("タイプ (feat/fix/docs/chore/ci/build/refactor/perf/test)", "feat");
+  const type =
+    fromFlags.type ?? prompt("タイプ (feat/fix/docs/chore/ci/build/refactor/perf/test)", "feat");
   const title = fromFlags.title ?? prompt("タイトル (短く) ");
   const body = fromFlags.body ?? prompt("本文 (省略可)", "");
   const label = type === "feat" ? "enhancement" : type === "fix" ? "bug" : undefined;

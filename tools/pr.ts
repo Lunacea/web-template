@@ -33,34 +33,44 @@ function prompt(question: string, defaultValue = ""): string {
 }
 
 function main() {
-  const flags = parseFlags(process.argv.slice(2)) as Partial<
-    { type: string; summary: string; issue: string; body: string; draft: string }
-  >;
+  const flags = parseFlags(process.argv.slice(2)) as Partial<{
+    type: string;
+    summary: string;
+    issue: string;
+    body: string;
+    draft: string;
+  }>;
 
   const defaultTitleType = "feat";
-  const type = flags.type ?? prompt("タイプ (feat/fix/docs/chore/ci/build/refactor/perf/test)", defaultTitleType);
+  const type =
+    flags.type ??
+    prompt("タイプ (feat/fix/docs/chore/ci/build/refactor/perf/test)", defaultTitleType);
   let summary = flags.summary ?? prompt("タイトル要約", "");
   const issue = flags.issue ?? prompt("関連Issue番号 (#なし)", "");
   const bodyInput = flags.body ?? (issue ? `Closes #${issue}` : prompt("本文 (省略可)", ""));
 
-  const currentBranch = spawnSync("git", ["branch", "--show-current"], { encoding: "utf8" }).stdout.trim();
+  const currentBranch = spawnSync("git", ["branch", "--show-current"], {
+    encoding: "utf8",
+  }).stdout.trim();
   if (!summary) {
-    const slug = currentBranch.split("/").slice(1).join("/").replace(/^[^a-z0-9-]*|[^a-z0-9-]*$/gi, "").split("--").pop() || currentBranch;
+    const slug =
+      currentBranch
+        .split("/")
+        .slice(1)
+        .join("/")
+        .replace(/^[^a-z0-9-]*|[^a-z0-9-]*$/gi, "")
+        .split("--")
+        .pop() || currentBranch;
     summary = slug.replace(/-/g, " ");
   }
 
   const title = `${type}: ${summary}`;
-  const args = [
-    "pr",
-    "create",
-    "--base",
-    "main",
-    "--head",
-    currentBranch,
-    "--title",
-    title,
-  ];
-  if (bodyInput) args.push("--body", bodyInput);
+  const args = ["pr", "create", "--base", "main", "--head", currentBranch, "--title", title];
+  if (bodyInput) {
+    const bodyPath = ".git/PR_BODY.txt";
+    Bun.write(bodyPath, bodyInput.replace(/_/g, " "));
+    args.push("--body-file", bodyPath);
+  }
   if (flags.draft === "true") args.push("--draft");
 
   const res = spawnSync("gh", args, { stdio: "inherit", shell: false });

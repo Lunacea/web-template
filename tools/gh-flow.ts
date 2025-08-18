@@ -33,11 +33,16 @@ function run(cmd: string, args: string[]) {
 }
 
 function main() {
-  const flags = parseFlags(process.argv.slice(2)) as Partial<
-    { type: string; slug: string; issueTitle: string; issueBody: string; auto: string }
-  >;
+  const flags = parseFlags(process.argv.slice(2)) as Partial<{
+    type: string;
+    slug: string;
+    issueTitle: string;
+    issueBody: string;
+    auto: string;
+  }>;
 
-  const type = flags.type ?? ask("タイプ (feat/fix/docs/chore/ci/build/refactor/perf/test)", "feat");
+  const type =
+    flags.type ?? ask("タイプ (feat/fix/docs/chore/ci/build/refactor/perf/test)", "feat");
   const slug = flags.slug ?? ask("ブランスラグ (kebab-case)");
   const issue = (flags.auto ?? ask("Issue を先に作成しますか? (y/N)", "N")).toLowerCase() === "y";
 

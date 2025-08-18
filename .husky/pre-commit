@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
-. "$(dirname "$0")/_/husky.sh"
 
-bun x @biomejs/biome check --apply .
+bun x @biomejs/biome check --write .
 bun run md:lint
 
