@@ -66,7 +66,7 @@ function main() {
 
   const title = `${type}: ${summary}`;
   const args = ["pr", "create", "--base", "main", "--head", currentBranch, "--title", title];
-  if (bodyInput) {
+  if (typeof bodyInput === "string" && bodyInput.length > 0) {
     const bodyPath = ".git/PR_BODY.txt";
     Bun.write(bodyPath, bodyInput.replace(/_/g, " "));
     args.push("--body-file", bodyPath);
