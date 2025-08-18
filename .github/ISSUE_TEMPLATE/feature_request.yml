@@ -1,0 +1,31 @@
+name: Feature request
+description: 機能追加の要望
+labels: [enhancement]
+title: "feat: <短い要約>"
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: 何を実現したいか
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 受け入れ基準
+      description: 完了条件を箇条書きで
+      value: |
+        - 
+        - 
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 優先度
+      options:
+        - P0
+        - P1
+        - P2
+    validations:
+      required: false
+

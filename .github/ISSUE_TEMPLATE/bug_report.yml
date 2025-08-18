@@ -1,0 +1,40 @@
+name: Bug report
+description: バグの報告
+labels: [bug]
+title: "fix: <短い要約>"
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: 何が問題かを簡潔に
+      placeholder: 期待した動作と実際の動作
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 再現手順
+      description: 再現方法を箇条書きで
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: 環境情報
+      description: OS/ランタイム/ブラウザなど
+      value: |
+        - OS: 
+        - Bun: 
+        - Node (必要なら): 
+        - Docker: 
+  - type: textarea
+    id: logs
+    attributes:
+      label: ログ/スクリーンショット
+      render: shell
+

@@ -1,0 +1,9 @@
+area:docs:
+  - "**/*.md"
+area:ci:
+  - ".github/workflows/**"
+area:infra:
+  - "infra/**"
+area:frontend:
+  - "src/**"
+
