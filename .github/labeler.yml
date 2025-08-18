@@ -1,33 +1,32 @@
- # actions/labeler v5 config (list of rules)
- - label: area:docs
-   changed-files:
-     - any-glob-to-any-file: ["**/*.md"]
+area:docs:
+  - changed-files:
+      - any-glob-to-any-file: ["**/*.md"]
 
- - label: area:ci
-   changed-files:
-     - any-glob-to-any-file: [".github/workflows/**", ".github/*.yml", ".github/*.yaml"]
+area:ci:
+  - changed-files:
+      - any-glob-to-any-file: [".github/workflows/**", ".github/*.yml", ".github/*.yaml"]
 
- - label: area:infra
-   changed-files:
-     - any-glob-to-any-file: ["infra/**", "terraform/**"]
+area:infra:
+  - changed-files:
+      - any-glob-to-any-file: ["infra/**", "terraform/**"]
 
- - label: area:frontend
-   changed-files:
-     - any-glob-to-any-file: ["src/**"]
+area:frontend:
+  - changed-files:
+      - any-glob-to-any-file: ["src/**"]
 
- - label: area:deps
-   changed-files:
-     - any-glob-to-any-file: ["package.json", "bun.lock"]
+area:deps:
+  - changed-files:
+      - any-glob-to-any-file: ["package.json", "bun.lock"]
 
- - label: area:docker
-   changed-files:
-     - any-glob-to-any-file: ["docker/**", "docker-compose.yml", ".dockerignore"]
+area:docker:
+  - changed-files:
+      - any-glob-to-any-file: ["docker/**", "docker-compose.yml", ".dockerignore"]
 
- - label: area:devcontainer
-   changed-files:
-     - any-glob-to-any-file: [".devcontainer/**"]
+area:devcontainer:
+  - changed-files:
+      - any-glob-to-any-file: [".devcontainer/**"]
 
- - label: area:prisma
-   changed-files:
-     - any-glob-to-any-file: ["prisma/**"]
+area:prisma:
+  - changed-files:
+      - any-glob-to-any-file: ["prisma/**"]
 
