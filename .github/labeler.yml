@@ -1,9 +1,16 @@
-area:docs:
-  - "**/*.md"
-area:ci:
-  - ".github/workflows/**"
-area:infra:
-  - "infra/**"
-area:frontend:
-  - "src/**"
+- label: area:docs
+  changed-files:
+    - any-glob-to-any-file: ["**/*.md"]
+
+- label: area:ci
+  changed-files:
+    - any-glob-to-any-file: [".github/workflows/**"]
+
+- label: area:infra
+  changed-files:
+    - any-glob-to-any-file: ["infra/**"]
+
+- label: area:frontend
+  changed-files:
+    - any-glob-to-any-file: ["src/**"]
 
