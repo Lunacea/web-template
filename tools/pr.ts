@@ -34,9 +34,7 @@ function prompt(question: string, defaultValue = ""): string {
 
 async function writeBodyFile(filePath: string, content: string): Promise<void> {
   // Prefer Bun.write when available; fallback to Node fs for portability
-  const bunAny = (
-    globalThis as unknown as { Bun?: { write?: (p: string, d: string) => Promise<unknown> } }
-  ).Bun;
+  const bunAny = (globalThis as unknown as { Bun?: { write?: (p: string, d: string) => Promise<unknown> } }).Bun;
   if (bunAny && typeof bunAny.write === "function") {
     await bunAny.write(filePath, content);
     return;
