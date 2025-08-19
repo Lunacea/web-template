@@ -59,8 +59,8 @@ function main() {
     issueNum = res.stdout.trim();
   }
 
-  const branchArgs = ["tools/branch.ts", type, slug, issueNum].filter(Boolean) as string[];
-  const created = spawnSync("bun", branchArgs, {
+  const branchArgs = ["bun", ["tools/branch.ts", type, slug, issueNum].filter(Boolean) as string[]];
+  const created = spawnSync(branchArgs[0], branchArgs[1], {
     stdio: "inherit",
     shell: process.platform === "win32",
   });
