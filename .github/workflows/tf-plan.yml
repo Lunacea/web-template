@@ -6,6 +6,7 @@ on:
 jobs:
   plan:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       pull-requests: write
@@ -20,12 +21,12 @@ jobs:
       - name: Terraform Validate
         working-directory: infra/github
         run: terraform validate
-      - name: Terraform Plan
+      - name: Terraform Plan (no refresh)
         id: plan
         env:
           GITHUB_TOKEN: ${{ secrets.TF_GITHUB_TOKEN }}
         working-directory: infra/github
-        run: terraform plan -no-color -input=false -var "owner=${{ github.repository_owner }}" -var "repository=${{ github.event.repository.name }}" | tee plan.txt
+        run: terraform plan -no-color -input=false -refresh=false -lock=false -var "owner=${{ github.repository_owner }}" -var "repository=${{ github.event.repository.name }}" | tee plan.txt
       - name: Comment Plan
         uses: marocchino/sticky-pull-request-comment@v2
         with:
