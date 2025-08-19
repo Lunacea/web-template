@@ -333,13 +333,16 @@ docker compose down
 
 1. Issue を起票（任意）
    - `bun run issue:new` で対話的に作成（要 GitHub CLI `gh`）。
+   - 代替: GitHub UI から作成。
 2. ブランチを作成
    - 規約例: `feat/PROJ-123--add-xxx`, `fix/bug-slug`
-   - `bun run branch:new` で対話的に作成、または `bun run gh:flow` で Issue 作成〜ブランチ作成〜PR まで一括補助。
+   - `bun run branch:new` で対話的に作成。
+   - 一括補助: `bun run gh:flow`（Issue → ブランチ → PR）。
 3. 実装してコミット
    - `bun run lint:fix`, `bun run typecheck`, `bun run test` を通す。
 4. PR を作成
-   - `bun run pr:new` で対話的に作成（または GitHub 上で作成）。
+   - `bun run pr:new` で対話的に作成（要 `gh`）。
+   - 代替: `gh pr create` 直接、または GitHub 上で作成。
 5. マージ（main）
    - CD が走り、GHCR へ push → Terraform → Prisma（任意）→ semantic-release が順に実行。
 

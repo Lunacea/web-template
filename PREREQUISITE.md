@@ -100,6 +100,30 @@ exec $SHELL -l && bun --version
 
 ### 2.5 Terraform
 
+### 2.6 GitHub CLI (gh)（tools 利用時に推奨）
+
+```bash
+# [Windows]
+winget install --id GitHub.cli -e --source winget
+gh auth login  # GitHub にログイン
+
+# [macOS]
+brew install gh
+gh auth login
+
+# [Linux（Ubuntu系）]
+type -p curl >/dev/null || sudo apt install curl -y
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
+  sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+  https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update && sudo apt install gh -y
+gh auth login
+```
+
+`tools/issue.ts`, `tools/pr.ts`, `tools/gh-flow.ts` は `gh` に依存します。
+利用前に `gh auth login` を完了してください。
+
 ```bash
 # [Windows]
 winget install --id HashiCorp.Terraform -e --source winget
