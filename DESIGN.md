@@ -1,59 +1,61 @@
-# 設計ドキュメント
+# Design
 
-本プロジェクトのアーキテクチャ、開発フロー、CI/CD、リポジトリ自動化の設計方針を示します。
+本プロジェクトの Architecture、Development workflow、CI/CD、Repository automation の設計方針を示します。
 
-## 全体アーキテクチャ
+## Architecture (overview)
 
 ```mermaid
 flowchart TB
-  Dev["開発者\n(VS Code + Dev Containers)"]
-  DC["Dev Container\n(Bun/TS/Toolchain)"]
-  Host["ホストOS"]
-  Compose["docker compose\napp + db"]
-  AppC["app コンテナ\n(Bun server)"]
-  DB[(PostgreSQL)]
+  subgraph DevEnv["Dev environment"]
+    DEV["Developer (VS Code)"] -- "Reopen in Container" --> DC["Dev Container (Bun/TS)"]
+  end
+  HOST["Host OS (Docker daemon)"]
+  COMPOSE["docker compose (app + db)"]
+  APP["App container (Bun server)"]
+  DB[("PostgreSQL")]
 
-  Dev -- "Reopen in Container" --> DC
-  DC -- "コード編集/Lint/Type/Test" --> Host
-  Host -- "docker compose up -d" --> Compose
-  Compose --> AppC
-  Compose --> DB
-  AppC -- "PORT 3000" --> Dev
-  AppC -- "DATABASE_URL" --> DB
+  DC -- "edit / lint / type / test" --> DEV
+  DC -- "uses Docker CLI" --> HOST
+  HOST -- "compose up -d" --> COMPOSE
+  COMPOSE --> APP
+  COMPOSE --> DB
+  APP -- "PORT 3000" --> DEV
+  APP -- "DATABASE_URL" --> DB
 ```
 
-- 開発は Dev Container 上で統一（Bun/TypeScript/ツール群）。
-- Docker デーモン操作はホストで実行（compose で DB と app を起動）。
-- アプリは `http://localhost:3000`、ヘルスチェックは `/healthz`。
+- Dev Containers を前提に統一した開発環境（Bun/TypeScript/Tooling）。
+- Docker daemon 操作は Host 側で実行し、docker compose で app/db を起動。
+- App: `http://localhost:3000`（health check: `/healthz`）。
+- DB 接続は `DATABASE_URL` を使用。
 
-## リポジトリ自動化
+## Repository automation
 
 ```mermaid
 flowchart TB
   subgraph Hooks
-    PC["pre-commit: Biome + Markdownlint"]
-    CM["commit-msg: commitlint"]
+    PRE["pre-commit: Biome & Markdownlint"]
+    MSG["commit-msg: commitlint"]
   end
 
   subgraph CI
-    L[Biome]
-    MD[Markdownlint]
-    TSC[Type Check (tsc)]
-    UT["Unit Test (bun test)"]
-    B[Build]
-    V[Trivy]
-    CL[Commitlint]
+    LINT["Biome"]
+    MDL["Markdownlint"]
+    TSC["Type Check (tsc)"]
+    TEST["Unit Test (bun test)"]
+    BUILD["Build"]
+    TRIVY["Trivy"]
+    CMTL["Commitlint"]
   end
 
   subgraph CD
-    D[Build & Push GHCR]
-    TF[Terraform Apply]
-    PM[Prisma migrate deploy]
-    SR[semantic-release]
+    GHCR["GHCR build & push"]
+    TFA["Terraform apply"]
+    PRISMA["Prisma migrate (optional)"]
+    REL["semantic-release"]
   end
 
-  Renovate[Renovate]
-  Dependabot[Dependabot]
+  Renovate["Renovate"]
+  Dependabot["Dependabot"]
 
   Hooks --> CI
   CI --> CD
@@ -61,236 +63,193 @@ flowchart TB
   Dependabot --> CI
 ```
 
-- Conventional Commits 準拠（commitlint）。
-- semantic-release により GitHub Release と `CHANGELOG.md` を自動更新。
-- Renovate/Dependabot による依存更新 PR を想定。
+- Commit convention: Conventional Commits（commitlint）
+- Release: semantic-release（GitHub Release と `CHANGELOG.md` を自動更新）
+- Dependency updates: Renovate / Dependabot が PR を作成し CI をトリガー
 
-## 開発フロー（シーケンス）
+## Development workflow (sequence)
 
 ```mermaid
 sequenceDiagram
   participant Dev as Developer
-  participant Git as GitHub
+  participant GH as GitHub
   participant CI as "CI (PR)"
   participant CD as "CD (main)"
 
-  Dev->>Dev: ブランチ作成 (feat/PROJ-123--slug)
-  Dev->>Dev: 実装 → bun run lint/typecheck/test
-  Dev->>Git: PR 作成 (Conventional Commits)
-  Git->>CI: CI 実行 (Biome/MD/Type/Test/Build/Trivy/Commitlint)
-  CI-->>Git: ステータス通知
-  Dev->>Git: レビュー/マージ (main)
-  Git->>CD: CD 実行 (Build&Push / Terraform / Prisma / release)
-  CD-->>Git: Release & CHANGELOG 更新
+  Dev->>Dev: Issue (optional): bun run issue:new
+  Dev->>Dev: Branch: bun run branch:new (type/<issue#>--<slug>)
+  Dev->>Dev: or one-shot: bun run gh:flow
+  Dev->>Dev: Work: bun run fix / typecheck / test
+  Dev->>GH: PR: bun run pr:new (or gh pr create)
+  GH->>CI: Run CI (Biome/Markdownlint/tsc/test/build/Trivy/Commitlint)
+  CI-->>GH: Status
+  Dev->>GH: Review & merge to main
+  GH->>CD: Run CD (GHCR build&push / Terraform / Prisma optional / release)
+  CD-->>GH: Release & CHANGELOG
 ```
 
-## コンテナ/ビルド設計
+## Container / Build design
 
 ```mermaid
 flowchart LR
-  subgraph Image[Dockerfile]
-    D[deps ステージ: bun install]
-    R[runner ステージ: 実行用最小構成]
+  subgraph Dockerfile
+    deps["deps: bun install (cacheable)"]
+    runner["runner: minimal runtime"]
   end
-  Cache[(.docker-cache)]
-
-  D -- 再利用 --> D
-  Cache -.- D
-  D --> R
+  cache["BuildKit cache"] -. reuse .-> deps
+  deps --> runner
 ```
 
-- 依存インストールを分離し、レイヤキャッシュを最大化。
-- Compose で BuildKit のローカルキャッシュ（`.docker-cache`）を利用。
-- Bun 1.2 以降は `bun.lock` を使用。
-- GHCR へのタグは Actions 側で `owner/repo` を小文字化して生成（Docker の命名規則に準拠）。
+- Goals: small image, fast rebuilds, deterministic output
+- Layers: `deps` (bun install) → `runner`（必要ファイルのみコピー）
+- Caching: BuildKit cache と bun の cache mount を活用
+- Lockfile: Bun 1.2+ は `bun.lock` を利用
+- Local dev: docker compose は DB 用のみに使用（app は Bun サーバをローカル起動）
+- CI build & push: `.github/workflows/cd.yml` で BuildKit + `docker/build-push-action@v6`
+  - GHCR tag は Actions で `github.repository` を lowercase 化して付与（Docker 命名規則準拠）
 
-## インフラ/IaC（GitHub 設定）
+## Infrastructure / IaC (GitHub settings)
 
 ```mermaid
-flowchart LR
-  TF[Terraform infra/github] --> GH[GitHub]
-  TF --> GH
-  TF --> GH
-  TF --> GH
+flowchart TD
+  subgraph IaC
+    subgraph terraform-github["infra/github"]
+      TF_GH["Terraform (GitHub provider)"] --|apply|--> GHS["GitHub repository settings"]
+    end
+    subgraph terraform-envs["infra/environments"]
+      TF_STG["Terraform (stg)"] --|plan/apply|--> CLOUD_STG["Cloud (stg)"]
+      TF_PRD["Terraform (prd)"] --|plan/apply|--> CLOUD_PRD["Cloud (prd)"]
+    end
+  end
 ```
 
 - `infra/github` でブランチ保護/コラボレーター/Secrets/Variables 等を自動化。
 - 実行には `GITHUB_TOKEN` (repo 管理権限) が必要。
 
-## ディレクトリ要点
+## Directory overview
 
 ```text
 web-template/
-├── .ai-prompts/
-│   └── prompts.md
-├── .devcontainer/
-│   ├── devcontainer.json
-│   └── Dockerfile
+├── .devcontainer/          Dev Containers config
 ├── .github/
-│   ├── PULL_REQUEST_TEMPLATE.md
-│   ├── workflows/
-│   │   ├── ci.yml
-│   │   └── cd.yml
-│   ├── dependabot.yml
+│   ├── workflows/          CI/CD workflows (ci.yml, cd.yml)
+│   ├── dependabot.yml      Dependency updates
 │   └── renovate.json
-├── .husky/
-│   ├── commit-msg
-│   ├── pre-commit
-│   └── pre-push
-├── .vscode/
-│   ├── extensions.json
-│   └── settings.json
 ├── docker/
-│   └── Dockerfile
+│   └── Dockerfile          Production image
 ├── infra/
-│   ├── environments/
-│   │   ├── prd/
-│   │   │   └── main.tf
-│   │   └── stg/
-│   │       └── main.tf
-│   ├── github/
-│   │   ├── main.tf
-│   │   ├── variables.tf
-│   │   └── README.md
-│   └── modules/
-│       └── README.md
+│   ├── environments/       Cloud IaC per env (stg, prd)
+│   │   ├── stg/main.tf
+│   │   └── prd/main.tf
+│   └── github/             Repo settings IaC (branch protection, secrets)
 ├── prisma/
-│   ├── migrations/
-│   │   └── .gitkeep
-│   └── schema.prisma
-├── tools/
-│   ├── branch.ts
-│   └── quick-commit.ts
+│   └── schema.prisma       DB schema
+├── tools/                  CLI tools for workflow
+│   ├── branch.ts           Create branch (type/<issue#>--<slug>)
+│   ├── issue.ts            Create issue (gh)
+│   ├── pr.ts               Create PR (gh)
+│   ├── gh-flow.ts          Issue→Branch→PR helper (gh)
+│   ├── quick-commit.ts     Quick Conventional Commit
+│   └── fix.ts              Lint/type/test auto-fix run
 ├── src/
-│   ├── backend/
-│   │   └── server.ts
-│   ├── components/
-│   │   └── README.md
-│   ├── frontend/
-│   │   └── app/
-│   │       └── page.tsx
-│   └── lib/
-│       ├── hello.ts
-│       └── hello.test.ts
-├── .commitlintrc.json
-├── .czrc
-├── .dockerignore
-├── .gitignore
-├── .releaserc.json
-├── biome.json
-├── bun.lock
-├── CHANGELOG.md
-├── DESIGN.md
-├── docker-compose.yml
-├── package.json
-├── PREREQUISITE.md
-├── README.md
-└── tsconfig.json
+│   ├── backend/server.ts   Bun server (port 3000, /healthz)
+│   ├── frontend/app/page.tsx
+│   └── lib/                Sample lib & tests
+├── docker-compose.yml      Local DB (dev)
+├── package.json            Scripts & deps
+├── README.md               Overview & workflow
+├── PREREQUISITE.md         Setup guide
+└── DESIGN.md               Design & architecture
 ```
 
-## 非機能要件/運用
+## Non-functional & operations
 
-- コード規約: Biome（formatter/linter）
-- コミット規約: Conventional Commits（commitlint）
-- 依存更新: Renovate/Dependabot
-- リリース: semantic-release（GitHub Release + CHANGELOG.md）
+- Code style: Biome (formatter/linter)
+- Commit convention: Conventional Commits (commitlint)
+- Dependencies: Renovate / Dependabot
+- Release: semantic-release (GitHub Release + CHANGELOG.md)
 
-## 技術スタック定義
+## Stack definition
 
-### 既定の技術スタック（固定）
+### Core stack (fixed)
 
-#### ランタイム・言語
+#### Runtime & language
 
-- **Bun**: 高速な JavaScript/TypeScript ランタイム
-- **TypeScript**: 静的型付け言語
-- **Node.js**: 必要に応じて Bun と併用可能
+- **Bun**: JavaScript/TypeScript runtime
+- **TypeScript**: Static type system
+- **Node.js**: Use with Bun if needed
 
-#### 開発環境・ツール
+#### Tooling
 
-- **Dev Containers**: 統一された開発環境
-- **VS Code**: 推奨エディタ（拡張機能設定済み）
-- **Git**: バージョン管理
-- **GitHub**: リポジトリ・CI/CD プラットフォーム
+- **Dev Containers**: Unified dev environment
+- **VS Code**: Recommended editor
+- **Git**: Version control
+- **GitHub**: Repo & CI/CD platform
 
-#### コード品質・規約
+#### Quality & conventions
 
-- **Biome**: フォーマッタ・リンター
-- **Husky**: Git フック管理
-- **commitlint**: Conventional Commits 準拠
-- **semantic-release**: 自動バージョニング・リリース
+- **Biome**: Formatter/Linter
+- **Husky**: Git hooks
+- **commitlint**: Conventional Commits
+- **semantic-release**: Automated release/versioning
 
-#### インフラ・CI/CD
+#### Infrastructure & CI/CD
 
-- **Docker**: コンテナ化
-- **Terraform**: インフラ・GitHub 設定の IaC
-- **GitHub Actions**: CI/CD パイプライン
-- **Dependabot/Renovate**: 依存関係自動更新
+- **Docker**: Containerization
+- **Terraform**: IaC (including GitHub settings)
+- **GitHub Actions**: CI/CD pipeline
+- **Dependabot/Renovate**: Dependency updates
 
-### 柔軟性のある技術スタック（選択可能）
+### Optional stack
 
-#### フロントエンドフレームワーク
+#### Front-end framework
 
-- **React**: デフォルト（設定済み）
-- **Vue**: 必要に応じて導入可能
-- **Svelte**: 必要に応じて導入可能
-- **その他**: 任意のフレームワークに対応
+- **React** (default), **Vue**, **Svelte**, others
 
-#### データベース・ORM
+#### Database / ORM
 
-- **PostgreSQL**: デフォルト（設定済み）
-- **Prisma**: デフォルト ORM
-- **その他**: MySQL, SQLite, MongoDB 等に変更可能
-- **ORM**: Prisma 以外（TypeORM, Drizzle 等）も選択可能
+- **PostgreSQL** (default)
+- **Prisma** (default ORM)
+- Others: MySQL, SQLite, MongoDB, etc.
+- Alternative ORM: TypeORM, Drizzle, etc.
 
-#### スタイリング
+#### Styling
 
-- **Tailwind CSS**: デフォルト（設定済み）
-- **その他**: CSS Modules, Styled Components, Emotion 等
+- **Tailwind CSS** (default), CSS Modules, Styled Components, Emotion, etc.
 
-#### テストフレームワーク
+#### Test framework
 
-- **bun test**: デフォルト（Vitest 互換）
-- **その他**: Jest, Vitest 等も利用可能
+- **bun test** (Vitest-compatible), Jest, Vitest
 
-### 未決定・範囲外の技術・スコープ
+### TBD / Out of scope
 
-#### フロントエンド（未決定）
+#### Front-end (TBD)
 
-- **UI ライブラリ**: Material-UI, Chakra UI, Ant Design 等
-- **状態管理**: Redux, Zustand, Jotai, Zustand 等
-- **ルーティング**: React Router, Next.js, Remix 等
-- **SSR/SSG**: Next.js, Nuxt, SvelteKit 等
+- UI library, State management, Routing, SSR/SSG
 
-#### バックエンド（未決定）
+#### Back-end (TBD)
 
-- **API フレームワーク**: Express, Fastify, Hono 等
-- **認証**: JWT, Session, OAuth 等
-- **バリデーション**: Zod（基本設定済み）, Joi, Yup 等
+- API framework, Auth, Validation
 
-#### インフラ・デプロイ（未決定）
+#### Infrastructure / Deploy (TBD)
 
-- **クラウドプロバイダー**: AWS, GCP, Azure 等
-- **コンテナオーケストレーション**: Kubernetes, Docker Swarm 等
-- **CDN**: Cloudflare, AWS CloudFront 等
-- **監視・ログ**: Prometheus, Grafana, ELK Stack 等
+- Cloud provider, Orchestration, CDN, Observability
 
-#### その他（範囲外）
+#### Others (out of scope)
 
-- **モバイルアプリ**: React Native, Flutter 等
-- **デスクトップアプリ**: Electron, Tauri 等
-- **AI/ML**: TensorFlow, PyTorch 等
-- **ブロックチェーン**: Web3, Ethereum 等
+- Mobile app (React Native, Flutter), Desktop app (Electron, Tauri),
+  AI/ML (TensorFlow, PyTorch), Blockchain (Web3, Ethereum)
 
-### 技術選択の指針
+### Selection policy
 
-1. **既定技術**: プロジェクトの基盤として固定、変更不可
-2. **柔軟技術**: チームの要件・好みに応じて選択可能
-3. **未決定技術**: プロジェクト開始時にチームで決定
-4. **範囲外**: 本テンプレートの対象外、別途検討が必要
+1. **Core**: 固定（プロジェクトの基盤）
+2. **Optional**: チーム要件に応じて選択
+3. **TBD**: プロジェクト開始時に決定
+4. **Out of scope**: テンプレート対象外
 
 この設計により、基盤は統一しつつ、フロントエンド・バックエンドの技術選択に柔軟性を持たせています。
 
-### 注意事項（開発環境の前提）
+### Notes (dev environment)
 
-- Dev Container は統一開発環境の提供を目的として使用し、Docker デーモン操作（`docker compose` など）は原則ホスト側で実行します。
-- 本番イメージのビルドは CI（GitHub Actions）で行い、ローカルでは DB 起動用途に限定します。
+- Dev Containers を前提とし、`docker compose` などのデーモン操作はホストで実行します。
+- Production image build は GitHub Actions 上で行い、ローカルは DB 起動用途に限定します。
