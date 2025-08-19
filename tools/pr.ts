@@ -68,7 +68,7 @@ function main() {
   const args = ["pr", "create", "--base", "main", "--head", currentBranch, "--title", title];
   if (typeof bodyInput === "string" && bodyInput.length > 0) {
     const bodyPath = ".git/PR_BODY.txt";
-    fs.writeFileSync(bodyPath, bodyInput.replace(/_/g, " "), { encoding: "utf8" });
+    Bun.write(bodyPath, bodyInput.replace(/_/g, " "));
     args.push("--body-file", bodyPath);
   }
   if (flags.draft === "true") args.push("--draft");
