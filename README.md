@@ -131,8 +131,8 @@ bun run typecheck
 # リンターの実行
 bun run lint
 
-# 開発サーバーの起動
-bun run dev
+# サーバー起動（Bun サーバー）
+bun run start
 ```
 
 ## 主要コマンド
@@ -140,9 +140,9 @@ bun run dev
 ### 開発・ビルド
 
 ```bash
-bun run dev          # 開発サーバー起動
-bun run build        # ビルド実行
-bun run start        # 本番サーバー起動
+bun run start        # サーバー起動（Bun サーバー）
+bun run build        # ビルド（テンプレート初期状態では no-op）
+bun run dev          # テスト監視（test:watch）
 ```
 
 ### 品質チェック
@@ -165,8 +165,7 @@ bun run db:migrate   # マイグレーション実行
 ### Git 操作
 
 ```bash
-bun run commit       # 対話的コミット（Conventional Commits）
-bun run commit:quick # クイックコミット
+bun run commit:quick # クイックコミット（Conventional Commits 準拠）
 bun run branch:new   # ブランチ作成（命名規約準拠）
 ```
 
@@ -225,7 +224,7 @@ git push -u origin HEAD
 - Prisma migrate deploy
 - semantic-release による自動リリース
 
-## 🏗️ アーキテクチャ
+## アーキテクチャ
 
 詳細な設計は [DESIGN.md](DESIGN.md) を参照してください。
 
@@ -239,7 +238,7 @@ web-template/
 ├── docker/                 # Docker 設定
 ├── infra/                  # Terraform 設定
 ├── prisma/                 # データベーススキーマ
-├── scripts/                # 開発効率化スクリプト
+├── tools/                  # 開発効率化スクリプト
 └── src/
     ├── backend/           # バックエンド（Bun サーバー等）
     └── frontend/          # フロントエンド（後で選択する UI フレームワーク）
@@ -266,7 +265,7 @@ web-template/
 - API フレームワーク、認証方式
 - クラウドプロバイダー、監視・ログ
 
-## 🐳 Docker / Compose
+## Docker / Compose
 
 ### 開発環境での使用
 
@@ -294,7 +293,7 @@ docker compose down
 - BuildKit のローカルキャッシュ（`.docker-cache`）
 - Bun 1.2+ の `bun.lock` 対応
 
-## 🔧 CI/CD
+## CI/CD
 
 ### CI（Pull Request）
 
@@ -361,7 +360,7 @@ terraform -chdir=infra/github apply -auto-approve \
   -var='variables={"NODE_ENV"="production"}'
 ```
 
-## 🎨 フロントエンドフレームワーク導入
+## フロントエンドフレームワーク導入
 
 このテンプレートはフロントエンドフレームワークを後から選択できます。
 
@@ -386,14 +385,14 @@ bun add svelte
 
 詳細な手順は [PREREQUISITE.md](PREREQUISITE.md) の「段階的な導入ガイド」を参照してください。
 
-## 📖 ドキュメント
+## ドキュメント
 
 - **[PREREQUISITE.md](PREREQUISITE.md)**: セットアップ手順・トラブルシューティング
 - **[DESIGN.md](DESIGN.md)**: アーキテクチャ・設計方針・技術スタック定義
 - **[.ai-prompts/prompts.md](.ai-prompts/prompts.md)**: AI 開発支援プロンプト集
 - **[tools/](tools/)**: 開発効率化ツール
 
-## 🆘 トラブルシューティング
+## トラブルシューティング
 
 よくある問題と解決方法は [PREREQUISITE.md](PREREQUISITE.md) の「トラブルシューティング」セクションを参照してください。
 
@@ -426,18 +425,6 @@ bun add svelte
 - [ ] パフォーマンス最適化
 - [ ] 国際化・アクセシビリティ
 - [ ] コンプライアンス対応
-
-## 🤝 コントリビューション
-
-1. このリポジトリをフォーク
-2. 機能ブランチを作成（`feat/amazing-feature`）
-3. 変更をコミット（Conventional Commits 準拠）
-4. ブランチにプッシュ
-5. Pull Request を作成
-
-## 📄 ライセンス
-
-[UNLICENSED](LICENSE) - このプロジェクトはライセンスされていません。
 
 ## 🔗 関連リンク
 
