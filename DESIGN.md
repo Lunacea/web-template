@@ -44,6 +44,8 @@ flowchart TB
     TEST["Unit Test (bun test)"]
     BUILD["Build"]
     TRIVY["Trivy"]
+    CODEQL["CodeQL"]
+    SECSCAN["Secret Scan (gitleaks)"]
     CMTL["Commitlint"]
   end
 
@@ -66,6 +68,7 @@ flowchart TB
 - Commit convention: Conventional Commits（commitlint）
 - Release: semantic-release（GitHub Release と `CHANGELOG.md` を自動更新）
 - Dependency updates: Renovate / Dependabot が PR を作成し CI をトリガー
+- Security: CodeQL（codeql.yml）、gitleaks（secret-scan.yml）
 
 ## Development workflow (sequence)
 

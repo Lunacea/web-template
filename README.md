@@ -183,6 +183,10 @@ bun run md:lint:fix  # Markdown 自動修正
 
 - Operations (Issue/Branch/PR/Release)
 - CI/CD 定義（`.github/workflows/ci.yml`, `.github/workflows/cd.yml`）
+- その他ワークフロー（`.github/workflows/`）
+  - `codeql.yml`: CodeQL（PR + weekly schedule）
+  - `secret-scan.yml`: gitleaks（PR/push）
+  - `tf-plan.yml`: Terraform plan（infra/github）
 
 ## Architecture
 
@@ -234,8 +238,8 @@ Container / Build design を参照してください。
 
 ### CI (Pull Request)
 
-- Biome, Markdownlint, Type Check (tsc), Unit Test (bun test), Build,
-  Trivy, Commitlint
+- Biome, Markdownlint, Type Check (tsc), Unit Test (bun test), Build, Trivy,
+  Commitlint, CodeQL, Secret Scan (gitleaks)
 
 ### CD（main ブランチ）
 
@@ -257,6 +261,7 @@ Container / Build design を参照してください。
   - 通常は追加設定不要です。
 - **DATABASE_URL（任意）**: 設定されている場合のみ `Prisma migrate deploy` を実行します。
   - 未設定でも CD は失敗しません。
+- Secret Scan: `GITHUB_TOKEN` で動作（追加のシークレットは不要）。`GITLEAKS_LICENSE` は任意。
 
 ## Operations (Issue/Branch/PR/Release)
 

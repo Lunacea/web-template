@@ -275,6 +275,7 @@ docker compose exec db psql -U postgres -d app -c "SELECT 1;"
 # GitHub リポジトリの Settings > Secrets and variables > Actions で以下を設定
 # DATABASE_URL: 本番/ステージング環境のデータベース接続文字列（任意）
 # GITHUB_TOKEN: Actions 既定トークン。GHCR push/リリースに使用（通常は追加設定不要）
+# Secret Scan (gitleaks): 追加設定不要（GITHUB_TOKEN を使用）。
 ```
 
 ### Terraform (by environment)
@@ -282,6 +283,7 @@ docker compose exec db psql -U postgres -d app -c "SELECT 1;"
 ```bash
 # 現状は placeholder（infra/environments/{stg,prd}）
 # 利用クラウドのプロバイダ設定と認証情報を追加してください
+# PR に plan をコメントするジョブの導入を推奨（承認後 apply）。
 
 # ローカルでの Terraform 実行例
 cd infra/environments/stg
