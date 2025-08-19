@@ -13,5 +13,5 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["bun-types"]
   },
-  "include": ["src", "tools", "*.config.*", "*.config.*.ts"]
+  "include": ["src", "*.config.*", "*.config.*.ts"]
 }
