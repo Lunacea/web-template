@@ -179,10 +179,59 @@ bun run md:lint:fix  # Markdown 自動修正
 
 ## Workflow
 
-詳細な運用フローは下記を参照してください。
+### 1. ブランチ作成（命名規約準拠）
 
-- Operations (Issue/Branch/PR/Release)
-- CI/CD 定義（`.github/workflows/ci.yml`, `.github/workflows/cd.yml`）
+```bash
+# 機能追加
+git checkout -b feat/PROJ-123--hello-world
+
+# バグ修正
+git checkout -b fix/login-error
+
+# ドキュメント更新
+git checkout -b docs/readme-update
+```
+
+### 2. 開発・テスト
+
+```bash
+# 実装後、品質チェック
+bun run lint:fix
+bun run typecheck
+bun run test
+```
+
+### 3. Commit & Push
+
+```bash
+# Quick commit (Conventional Commits)
+bun run commit:quick "feat: add hello world function"
+git push -u origin HEAD
+```
+
+### 4. PR & Review
+
+- Create PR with tools:
+  - `bun run pr:new`（requires `gh`）
+  - or `bun run gh:flow` to create Issue → Branch → PR in one go
+- CI runs as defined in `.github/workflows/ci.yml`:
+  - Lint/Format: `bunx biome ci .`
+  - Markdownlint: `bun run md:lint`
+  - Type Check: `bun run typecheck`
+  - Unit Test: `bun test`
+  - Build: `bun run build`
+  - Trivy: `aquasecurity/trivy-action@0.26.0`
+- Merge after review approvals
+
+### 5. Continuous Delivery
+
+- Trigger: merge to `main` (see `.github/workflows/cd.yml`)
+- Steps:
+  - GHCR login: `docker/login-action@v3`
+  - Build & Push: `docker/build-push-action@v6` with lowercase tag
+  - Terraform: `terraform init` / `terraform apply` in `infra/environments/prd`
+  - Prisma (optional): `bunx prisma migrate deploy` if `secrets.DATABASE_URL`
+  - Release: `bunx semantic-release`
 
 ## Architecture
 
@@ -225,10 +274,33 @@ web-template/
 - API フレームワーク、認証方式
 - クラウドプロバイダー、監視・ログ
 
-## Docker / Compose（概要）
+## Docker / Compose
 
-ローカルでは DB の起動に使用します。詳細は [DESIGN.md](DESIGN.md) の
-Container / Build design を参照してください。
+### 開発環境での使用
+
+```bash
+# データベース起動
+docker compose up -d --build
+
+# 状況確認
+docker compose ps
+docker compose logs db
+
+# 停止
+docker compose down
+```
+
+### 設計方針
+
+- **Dev Container**: 統一された開発環境（Bun/TypeScript/ツール群）
+- **Docker Compose**: データベースとアプリケーションの起動
+- **本番ビルド**: GitHub Actions で BuildKit を使用
+
+### ビルド最適化
+
+- 依存インストールを分離（deps ステージ）
+- BuildKit のローカルキャッシュ（`.docker-cache`）
+- Bun 1.2+ の `bun.lock` 対応
 
 ## CI/CD
 
@@ -257,6 +329,8 @@ Container / Build design を参照してください。
   - 通常は追加設定不要です。
 - **DATABASE_URL（任意）**: 設定されている場合のみ `Prisma migrate deploy` を実行します。
   - 未設定でも CD は失敗しません。
+- **Terraform 用トークン（任意）**: `infra/github` の実行に管理権限が必要な場合、PAT を Secrets に追加してください（例: `TF_GITHUB_TOKEN`）。
+  - 必要に応じてワークフローの `GITHUB_TOKEN` 参照を切り替えてください。
 
 ## Operations (Issue/Branch/PR/Release)
 
