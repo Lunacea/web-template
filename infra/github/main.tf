@@ -17,17 +17,23 @@ data "github_repository" "repo" {
   full_name = "${var.owner}/${var.repository}"
 }
 
-resource "github_branch_protection_v3" "main" {
-  repository     = data.github_repository.repo.name
-  branch         = "main"
+resource "github_branch_protection" "main" {
+  repository_id  = data.github_repository.repo.node_id
+  pattern        = "main"
   enforce_admins = true
-
-  require_conversation_resolution = true
 
   required_pull_request_reviews {
     dismiss_stale_reviews           = true
     required_approving_review_count = 1
     require_code_owner_reviews      = false
+  }
+
+  dynamic "required_status_checks" {
+    for_each = length(var.required_status_checks_contexts) > 0 ? [1] : []
+    content {
+      strict   = var.required_status_checks_strict
+      contexts = var.required_status_checks_contexts
+    }
   }
 }
 
@@ -52,13 +58,18 @@ resource "github_actions_variable" "variables" {
   value         = each.value
 }
 
-resource "github_repository_vulnerability_alerts" "alerts" {
-  repository = data.github_repository.repo.name
-}
-
 resource "github_actions_repository_permissions" "permissions" {
+  count           = var.manage_actions_permissions ? 1 : 0
   repository      = data.github_repository.repo.name
   enabled         = true
   allowed_actions = "all"
+}
+
+resource "github_issue_label" "labels" {
+  for_each    = var.labels
+  repository  = data.github_repository.repo.name
+  name        = each.key
+  color       = replace(each.value.color, "#", "")
+  description = try(each.value.description, null)
 }
 

@@ -1,0 +1,33 @@
+name: Terraform Plan (infra/github)
+on:
+  pull_request:
+    paths:
+      - "infra/github/**"
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.2
+      - name: Terraform Init
+        working-directory: infra/github
+        run: terraform init -input=false
+      - name: Terraform Validate
+        working-directory: infra/github
+        run: terraform validate
+      - name: Terraform Plan
+        id: plan
+        env:
+          GITHUB_TOKEN: ${{ secrets.TF_GITHUB_TOKEN }}
+        working-directory: infra/github
+        run: terraform plan -no-color -input=false -var "owner=${{ github.repository_owner }}" -var "repository=${{ github.event.repository.name }}" | tee plan.txt
+      - name: Comment Plan
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: terraform-plan
+          path: infra/github/plan.txt

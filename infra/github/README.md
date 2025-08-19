@@ -9,6 +9,7 @@
 - GitHub Actions の Secrets/Variables 設定
 - 脆弱性アラートの有効化
 - Actions 実行許可（全アクション）
+- ラベルの作成・同期（`github_issue_label`）
 
 ## 使い方
 
@@ -25,6 +26,12 @@ module "repo" {
   }
   variables = {
     NODE_ENV = "production"
+  }
+
+  labels = {
+    "area:docs"     = { color = "#0366d6", description = "Documentation changes" }
+    "area:ci"       = { color = "#d73a4a", description = "CI/CD and workflows" }
+    # 省略可: 必要なラベルを追加
   }
 }
 ```
