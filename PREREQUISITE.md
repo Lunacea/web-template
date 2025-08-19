@@ -2,32 +2,32 @@
 
 このプロジェクトを動かすための前提条件と、OS別のセットアップ手順をまとめます。対象OSは Windows / macOS / Linux です。
 
-## 1. Required tools
+## 1. 必須ツール
 
-### Basics
+### 基本ツール
 
 - **Git**: バージョン管理
 - **Docker**: コンテナ化（Windows/macOS は Docker Desktop、Linux は Docker Engine + docker compose plugin）
 - **VS Code**: 推奨エディタ
 - **Dev Containers 拡張**: 統一された開発環境
 
-### Runtime & development
+### ランタイム・開発ツール
 
 - **Bun**: 高速な JavaScript/TypeScript ランタイム
 - **Node.js**: Bun と併用可能（必要に応じて）
 
-### Infrastructure & CI/CD
+### インフラ・CI/CD
 
 - **Terraform**: インフラ・GitHub 設定の IaC
 - **GitHub アカウント**: GitHub Actions、リポジトリ管理
 
-### Recommended VS Code extensions
+### 推奨 VS Code 拡張
 
 - 拡張は `.vscode/extensions.json` で自動提示されます（初回起動時にインストールを促されます）。
 - 主要な推奨拡張: Biome, Prisma, Tailwind CSS, Dev Containers, GitHub Actions,
   Terraform, Docker, Markdownlint, GitLens, Git Graph, Todo Tree など。
 
-## 2. Installation
+## 2. ツール別インストール
 
 ### 2.1 Docker
 
@@ -100,7 +100,7 @@ exec $SHELL -l && bun --version
 
 ### 2.5 Terraform
 
-### 2.6 GitHub CLI (gh) for tools
+### 2.6 GitHub CLI (gh)（tools 利用時に推奨）
 
 ```bash
 # [Windows]
@@ -121,8 +121,8 @@ sudo apt update && sudo apt install gh -y
 gh auth login
 ```
 
-`tools/issue.ts`, `tools/pr.ts`, `tools/gh-flow.ts` depend on `gh`.
-Run `gh auth login` before using them.
+`tools/issue.ts`, `tools/pr.ts`, `tools/gh-flow.ts` は `gh` に依存します。
+利用前に `gh auth login` を完了してください。
 
 ```bash
 # [Windows]
@@ -141,9 +141,9 @@ sudo apt-get update && sudo apt-get install -y terraform
 terraform -v
 ```
 
-## 3. First-time setup
+## 3. 初回セットアップ（共通）
 
-### Step 1: Clone repository
+### ステップ 1: リポジトリのクローン
 
 ```bash
 # リポジトリをクローン
@@ -155,7 +155,7 @@ pwd
 ls -la
 ```
 
-### Step 2: Dev Containers (recommended)
+### ステップ 2: Dev Container での開発環境起動（推奨）
 
 ```bash
 # VS Code で「Reopen in Container」を実行
@@ -166,7 +166,7 @@ ls -la
 # 完了まで数分待機してください
 ```
 
-### Step 3: Environment variables
+### ステップ 3: 環境変数の設定
 
 ```bash
 # .env ファイルを作成（Prisma 用の接続文字列）
@@ -176,7 +176,7 @@ echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/app" > .env
 cat .env
 ```
 
-### Step 4: Start database with Docker
+### ステップ 4: Docker でのデータベース起動
 
 ```bash
 # Docker を起動（DB 用）
@@ -189,7 +189,7 @@ docker compose ps
 docker compose logs db
 ```
 
-### Step 5: Prisma setup
+### ステップ 5: Prisma の設定
 
 ```bash
 # Prisma クライアントの生成
@@ -202,7 +202,7 @@ bun run db:migrate
 bunx prisma studio
 ```
 
-### Step 6: Verify
+### ステップ 6: 動作確認
 
 ```bash
 # テストの実行
@@ -218,11 +218,11 @@ bun run lint
 bun run start
 ```
 
-## 4. Troubleshooting
+## 4. トラブルシューティング
 
-### Common issues
+### よくある問題と解決方法
 
-#### Docker
+#### Docker 関連
 
 ```bash
 # Docker が起動していない場合
@@ -235,7 +235,7 @@ docker compose down
 docker compose up -d --build
 ```
 
-#### Dev Containers
+#### Dev Container 関連
 
 ```bash
 # Dev Container のビルドに失敗した場合
@@ -245,7 +245,7 @@ docker compose up -d --build
 # VS Code で「Dev Containers: Rebuild Container (No Cache)」を実行
 ```
 
-#### Bun
+#### Bun 関連
 
 ```bash
 # bun コマンドが見つからない場合
@@ -257,7 +257,7 @@ which bun
 exec $SHELL -l
 ```
 
-#### Database connectivity
+#### データベース接続エラー
 
 ```bash
 # PostgreSQL の起動確認
@@ -267,9 +267,9 @@ docker compose ps db
 docker compose exec db psql -U postgres -d app -c "SELECT 1;"
 ```
 
-## 5. GitHub Actions / Terraform
+## 5. GitHub Actions / Terraform の前提
 
-### GitHub secrets (common)
+### GitHub シークレットの設定（共通）
 
 ```bash
 # GitHub リポジトリの Settings > Secrets and variables > Actions で以下を設定
@@ -278,7 +278,7 @@ docker compose exec db psql -U postgres -d app -c "SELECT 1;"
 # TF_GITHUB_TOKEN: Terraform (infra/github) で管理権限が必要な場合に使用（任意）
 ```
 
-### Terraform (by environment)
+### Terraform の設定（環境別）
 
 ```bash
 # 現状は placeholder（infra/environments/{stg,prd}）
@@ -297,7 +297,7 @@ terraform plan
 terraform apply -auto-approve
 ```
 
-### GitHub repository settings (Terraform example)
+### GitHub リポジトリ設定（Terraform・例）
 
 ```bash
 # リポジトリ自体の設定は infra/github で自動化できます

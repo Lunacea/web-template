@@ -74,14 +74,14 @@
 
 ## Quick start
 
-### 1. Clone repository
+### 1. リポジトリのクローン
 
 ```bash
 git clone <your-repo-url> web-template
 cd web-template
 ```
 
-### 2. Dev Containers (recommended)
+### 2. Dev Container での開発環境起動（推奨）
 
 ```bash
 # VS Code で「Reopen in Container」を実行
@@ -92,14 +92,14 @@ cd web-template
 # 完了まで数分待機してください
 ```
 
-### 3. Environment variables
+### 3. 環境変数の設定
 
 ```bash
 # .env ファイルを作成（Prisma 用の接続文字列）
 echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/app" > .env
 ```
 
-### 4. Start database with Docker
+### 4. Docker でのデータベース起動
 
 ```bash
 # Docker を起動（DB 用）
@@ -109,7 +109,7 @@ docker compose up -d --build
 docker compose ps
 ```
 
-### 5. Prisma setup
+### 5. Prisma の設定
 
 ```bash
 # Prisma クライアントの生成
@@ -119,7 +119,7 @@ bun run db:generate
 bun run db:migrate
 ```
 
-### 6. Verify
+### 6. 動作確認
 
 ```bash
 # テストの実行
