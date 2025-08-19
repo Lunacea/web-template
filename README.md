@@ -27,36 +27,36 @@
 - **品質保証**: Biome、Husky、commitlint
 - **包括的ドキュメント**: 初心者から上級者まで対応
 
-## 技術スタック
+## Stack
 
-### 基盤技術（固定）
+### Core stack
 
 ![Bun](https://img.shields.io/badge/Bun-1.2+-000000?logo=bun&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 
-### 開発環境・ツール
+### Tooling
 
 ![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?logo=visualstudiocode&logoColor=white)
 ![Dev Containers](https://img.shields.io/badge/Dev%20Containers-0078D4?logo=visualstudiocode&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)
 
-### 品質・自動化
+### Quality & automation
 
 ![Biome](https://img.shields.io/badge/code%20style-Biome-60a5fa?logo=biome)
 ![Husky](https://img.shields.io/badge/Husky-000000?logo=git&logoColor=white)
 ![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fc8d62)
 ![semantic-release](https://img.shields.io/badge/semantic--release-enabled-43b02a)
 
-### インフラ・CI/CD
+### Infrastructure & CI/CD
 
 ![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?logo=terraform&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white)
 
-## 前提条件
+## Prerequisites
 
 詳細なセットアップ手順は [PREREQUISITE.md](PREREQUISITE.md) を参照してください。
 
@@ -72,7 +72,7 @@
 - **Bun**: 高速な JavaScript/TypeScript ランタイム
 - **Terraform**: インフラ・GitHub 設定の IaC
 
-## クイックスタート
+## Quick start
 
 ### 1. リポジトリのクローン
 
@@ -135,7 +135,7 @@ bun run lint
 bun run start
 ```
 
-## 主要コマンド
+## Commands
 
 ### 開発・ビルド
 
@@ -177,7 +177,7 @@ bun run md:lint      # Markdown リンター
 bun run md:lint:fix  # Markdown 自動修正
 ```
 
-## 開発フロー
+## Workflow
 
 ### 1. ブランチ作成（命名規約準拠）
 
@@ -224,7 +224,7 @@ git push -u origin HEAD
 - Prisma migrate deploy
 - semantic-release による自動リリース
 
-## アーキテクチャ
+## Architecture
 
 詳細な設計は [DESIGN.md](DESIGN.md) を参照してください。
 
@@ -244,22 +244,22 @@ web-template/
     └── frontend/          # フロントエンド（後で選択する UI フレームワーク）
 ```
 
-### 技術選択の指針
+### Stack policy
 
-#### 既定技術（固定）
+#### Core (fixed)
 
 - **ランタイム**: Bun、TypeScript
 - **開発環境**: Dev Containers、VS Code
 - **品質**: Biome、Husky、commitlint
 - **インフラ**: Docker、Terraform、GitHub Actions
 
-#### 柔軟技術（選択可能）
+#### Optional
 
 - **フロントエンド**: React/Vue/Svelte
 - **データベース**: PostgreSQL（デフォルト）、その他対応可能
 - **スタイリング**: Tailwind CSS（デフォルト）、その他対応可能
 
-#### 未決定技術（プロジェクト開始時に決定）
+#### TBD (decide at project start)
 
 - UI ライブラリ、状態管理、ルーティング
 - API フレームワーク、認証方式
@@ -328,7 +328,7 @@ docker compose down
 - **Terraform 用トークン（任意）**: `infra/github` の実行に管理権限が必要な場合、PAT を Secrets に追加してください（例: `TF_GITHUB_TOKEN`）。
   - 必要に応じてワークフローの `GITHUB_TOKEN` 参照を切り替えてください。
 
-## 🧭 運用方法（ブランチ/PR/リリース）
+## Operations (Issue/Branch/PR/Release)
 
 1. Issue を起票（任意）
    - `bun run issue:new` で対話的に作成（要 GitHub CLI `gh`）。
@@ -360,7 +360,7 @@ terraform -chdir=infra/github apply -auto-approve \
   -var='variables={"NODE_ENV"="production"}'
 ```
 
-## フロントエンドフレームワーク導入
+## Front-end framework (optional)
 
 このテンプレートはフロントエンドフレームワークを後から選択できます。
 
@@ -385,14 +385,14 @@ bun add svelte
 
 詳細な手順は [PREREQUISITE.md](PREREQUISITE.md) の「段階的な導入ガイド」を参照してください。
 
-## ドキュメント
+## Documentation
 
 - **[PREREQUISITE.md](PREREQUISITE.md)**: セットアップ手順・トラブルシューティング
 - **[DESIGN.md](DESIGN.md)**: アーキテクチャ・設計方針・技術スタック定義
 - **[.ai-prompts/prompts.md](.ai-prompts/prompts.md)**: AI 開発支援プロンプト集
 - **[tools/](tools/)**: 開発効率化ツール
 
-## トラブルシューティング
+## Troubleshooting
 
 よくある問題と解決方法は [PREREQUISITE.md](PREREQUISITE.md) の「トラブルシューティング」セクションを参照してください。
 
@@ -426,7 +426,7 @@ bun add svelte
 - [ ] 国際化・アクセシビリティ
 - [ ] コンプライアンス対応
 
-## 🔗 関連リンク
+## References
 
 - [Bun](https://bun.sh/) - JavaScript ランタイム
 - [TypeScript](https://www.typescriptlang.org/) - 静的型付け言語
