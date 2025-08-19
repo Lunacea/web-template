@@ -32,7 +32,7 @@ function prompt(question: string, defaultValue = ""): string {
   return res.trim() || defaultValue;
 }
 
-function main() {
+async function main() {
   const flags = parseFlags(process.argv.slice(2)) as Partial<{
     type: string;
     summary: string;
@@ -68,7 +68,7 @@ function main() {
   const args = ["pr", "create", "--base", "main", "--head", currentBranch, "--title", title];
   if (typeof bodyInput === "string" && bodyInput.length > 0) {
     const bodyPath = ".git/PR_BODY.txt";
-    fs.writeFileSync(bodyPath, bodyInput.replace(/_/g, " "), { encoding: "utf8" });
+    await Bun.write(bodyPath, bodyInput.replace(/_/g, " "));
     args.push("--body-file", bodyPath);
   }
   if (flags.draft === "true") args.push("--draft");
