@@ -1,8 +1,9 @@
-name: Terraform Plan (infra/github)
+name: Terraform Plan
 on:
   pull_request:
     paths:
       - "infra/github/**"
+      - "infra/environments/**"
 jobs:
   plan:
     runs-on: ubuntu-latest
@@ -14,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.12.2
+          terraform_version: 1.9.6
       - name: Terraform Init
         working-directory: infra/github
         run: terraform init -input=false
@@ -32,3 +33,32 @@ jobs:
         with:
           header: terraform-plan
           path: infra/github/plan.txt
+
+  plan-envs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    strategy:
+      matrix:
+        env_name: ["stg", "prd"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.6
+      - name: Terraform Init
+        working-directory: infra/environments/${{ matrix.env_name }}
+        run: terraform init -input=false
+      - name: Terraform Validate
+        working-directory: infra/environments/${{ matrix.env_name }}
+        run: terraform validate
+      - name: Terraform Plan (no refresh)
+        working-directory: infra/environments/${{ matrix.env_name }}
+        run: terraform plan -no-color -input=false -refresh=false | tee plan-${{ matrix.env_name }}.txt
+      - name: Comment Plan (${{ matrix.env_name }})
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: terraform-plan-${{ matrix.env_name }}
+          path: infra/environments/${{ matrix.env_name }}/plan-${{ matrix.env_name }}.txt
