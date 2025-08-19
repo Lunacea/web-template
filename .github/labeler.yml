@@ -1,32 +1,38 @@
-area:docs:
-  - changed-files:
-      - any-glob-to-any-file: ["**/*.md"]
+- label: "area:docs"
+  files:
+    - "**/*.md"
 
-area:ci:
-  - changed-files:
-      - any-glob-to-any-file: [".github/workflows/**", ".github/*.yml", ".github/*.yaml"]
+- label: "area:ci"
+  files:
+    - ".github/workflows/**"
+    - ".github/*.yml"
+    - ".github/*.yaml"
 
-area:infra:
-  - changed-files:
-      - any-glob-to-any-file: ["infra/**", "terraform/**"]
+- label: "area:infra"
+  files:
+    - "infra/**"
+    - "terraform/**"
 
-area:frontend:
-  - changed-files:
-      - any-glob-to-any-file: ["src/**"]
+- label: "area:frontend"
+  files:
+    - "src/**"
 
-area:deps:
-  - changed-files:
-      - any-glob-to-any-file: ["package.json", "bun.lock"]
+- label: "area:deps"
+  files:
+    - "package.json"
+    - "bun.lock"
 
-area:docker:
-  - changed-files:
-      - any-glob-to-any-file: ["docker/**", "docker-compose.yml", ".dockerignore"]
+- label: "area:docker"
+  files:
+    - "docker/**"
+    - "docker-compose.yml"
+    - ".dockerignore"
 
-area:devcontainer:
-  - changed-files:
-      - any-glob-to-any-file: [".devcontainer/**"]
+- label: "area:devcontainer"
+  files:
+    - ".devcontainer/**"
 
-area:prisma:
-  - changed-files:
-      - any-glob-to-any-file: ["prisma/**"]
+- label: "area:prisma"
+  files:
+    - "prisma/**"
 
