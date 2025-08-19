@@ -142,7 +142,7 @@ bun run start
 ```bash
 bun run start        # サーバー起動（Bun サーバー）
 bun run build        # ビルド（テンプレート初期状態では no-op）
-bun run dev          # テスト監視（test:watch）
+bun run dev          # 開発サーバー起動
 ```
 
 ### 品質チェック
