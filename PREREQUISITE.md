@@ -352,7 +352,7 @@ terraform -chdir=infra/github apply -auto-approve \
 1. **README.md**: プロジェクトの概要と使用方法
 2. **DESIGN.md**: アーキテクチャと設計方針
 3. **.ai-prompts/prompts.md**: AI 開発支援のためのプロンプト集
-4. **tools/**: 開発効率化スクリプト（`branch.ts`, `issue.ts`, `pr.ts`, `gh-flow.ts`, `quick-commit.ts`, `fix.ts`）
+4. **scripts/**: 開発効率化のためのスクリプト
 
 ## 8. サポート・リソース
 
