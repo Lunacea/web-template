@@ -19,7 +19,7 @@
 "area:frontend":
   - changed-files:
       - any-glob-to-any-file:
-          - "src/**"
+          - "src/frontend/**"
 
 "area:deps":
   - changed-files:
@@ -43,4 +43,13 @@
   - changed-files:
       - any-glob-to-any-file:
           - "prisma/**"
+"area:shared":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/lib/**"
+          - "src/components/**"
+"area:backend":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/backend/**"
 

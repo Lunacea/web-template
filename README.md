@@ -240,7 +240,9 @@ web-template/
 ├── infra/                  # Terraform 設定
 ├── prisma/                 # データベーススキーマ
 ├── scripts/                # 開発効率化スクリプト
-└── src/                    # ソースコード
+└── src/
+    ├── backend/           # バックエンド（Bun サーバー等）
+    └── frontend/          # フロントエンド（後で選択する UI フレームワーク）
 ```
 
 ### 技術選択の指針
