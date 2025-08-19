@@ -11,23 +11,23 @@
 [![Dev Containers](https://img.shields.io/badge/Dev%20Containers-ready-0078D4?logo=visualstudiocode&logoColor=white)](https://containers.dev/)
 [![License](https://img.shields.io/badge/License-UNLICENSED-lightgrey)](LICENSE)
 
-## 概要
+## 🚀 概要
 
 モダンなWebアプリ開発のための、**完全自動化を志向したTypeScriptプロジェクトテンプレート**です。
 
 **目標**: 開発者が `git clone` 後、ビジネスロジックの実装だけに集中できる環境を提供
 
-### 特徴
+### ✨ 主要な特徴
 
-- **Bun + TypeScript**: 高速な開発環境
-- **フレームワーク柔軟性**: React/Vue/Svelte を任意選択
-- **Dev Containers**: 統一された開発環境
-- **完全自動化**: CI/CD、リリース、依存更新
-- **IaC**: Terraform によるインフラ・GitHub設定自動化
-- **品質保証**: Biome、Husky、commitlint
-- **包括的ドキュメント**: 初心者から上級者まで対応
+- 🔥 **Bun + TypeScript**: 高速な開発環境
+- 🎯 **フレームワーク柔軟性**: React/Vue/Svelte を任意選択
+- 🐳 **Dev Containers**: 統一された開発環境
+- 🤖 **完全自動化**: CI/CD、リリース、依存更新
+- 🏗️ **IaC**: Terraform によるインフラ・GitHub設定自動化
+- 🎨 **品質保証**: Biome、Husky、commitlint
+- 📚 **包括的ドキュメント**: 初心者から上級者まで対応
 
-## 技術スタック
+## 🛠️ 技術スタック
 
 ### 基盤技術（固定）
 
@@ -56,7 +56,7 @@
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white)
 
-## 前提条件
+## 📋 前提条件
 
 詳細なセットアップ手順は [PREREQUISITE.md](PREREQUISITE.md) を参照してください。
 
@@ -72,7 +72,7 @@
 - **Bun**: 高速な JavaScript/TypeScript ランタイム
 - **Terraform**: インフラ・GitHub 設定の IaC
 
-## クイックスタート
+## 🚀 クイックスタート
 
 ### 1. リポジトリのクローン
 
@@ -135,7 +135,7 @@ bun run lint
 bun run dev
 ```
 
-## 主要コマンド
+## 📚 主要コマンド
 
 ### 開発・ビルド
 
@@ -178,7 +178,7 @@ bun run md:lint      # Markdown リンター
 bun run md:lint:fix  # Markdown 自動修正
 ```
 
-## 開発フロー
+## 🔄 開発フロー
 
 ### 1. ブランチ作成（命名規約準拠）
 
