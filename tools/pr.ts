@@ -32,18 +32,6 @@ function prompt(question: string, defaultValue = ""): string {
   return res.trim() || defaultValue;
 }
 
-async function writeBodyFile(filePath: string, content: string): Promise<void> {
-  // Prefer Bun.write when available; fallback to Node fs for portability
-  const bunAny = (
-    globalThis as unknown as { Bun?: { write?: (p: string, d: string) => Promise<unknown> } }
-  ).Bun;
-  if (bunAny && typeof bunAny.write === "function") {
-    await bunAny.write(filePath, content);
-    return;
-  }
-  fs.writeFileSync(filePath, content, { encoding: "utf8" });
-}
-
 async function main() {
   const flags = parseFlags(process.argv.slice(2)) as Partial<{
     type: string;
@@ -80,7 +68,7 @@ async function main() {
   const args = ["pr", "create", "--base", "main", "--head", currentBranch, "--title", title];
   if (typeof bodyInput === "string" && bodyInput.length > 0) {
     const bodyPath = ".git/PR_BODY.txt";
-    await writeBodyFile(bodyPath, bodyInput.replace(/_/g, " "));
+    await Bun.write(bodyPath, bodyInput.replace(/_/g, " "));
     args.push("--body-file", bodyPath);
   }
   if (flags.draft === "true") args.push("--draft");
