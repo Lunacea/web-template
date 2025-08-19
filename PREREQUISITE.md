@@ -20,6 +20,7 @@
 
 - **Terraform**: インフラ・GitHub 設定の IaC
 - **GitHub アカウント**: GitHub Actions、リポジトリ管理
+- **GitHub CLI (gh)**: `tools/issue.ts`, `tools/pr.ts`, `tools/gh-flow.ts` で使用
 
 ### Recommended VS Code extensions
 
@@ -123,6 +124,8 @@ gh auth login
 
 `tools/issue.ts`, `tools/pr.ts`, `tools/gh-flow.ts` depend on `gh`.
 Run `gh auth login` before using them.
+
+また、`tools/pr.ts` は Bun 環境を前提としています（Bun の型定義は `tsconfig.json` で有効化済み）。
 
 ```bash
 # [Windows]
@@ -283,7 +286,7 @@ docker compose exec db psql -U postgres -d app -c "SELECT 1;"
 ```bash
 # 現状は placeholder（infra/environments/{stg,prd}）
 # 利用クラウドのプロバイダ設定と認証情報を追加してください
-# PR に plan をコメントするジョブの導入を推奨（承認後 apply）。
+# PR に plan をコメントするジョブを実装済み（`tf-plan.yml`）。承認後に apply を行う運用を推奨。
 
 # ローカルでの Terraform 実行例
 cd infra/environments/stg

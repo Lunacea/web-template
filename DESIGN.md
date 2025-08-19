@@ -51,6 +51,8 @@ flowchart TB
 
   subgraph CD
     GHCR["GHCR build & push"]
+    SIGN["cosign sign (OIDC keyless)"]
+    SBOM["SBOM (Syft/SPDX)"]
     TFA["Terraform apply"]
     PRISMA["Prisma migrate (optional)"]
     REL["semantic-release"]
@@ -61,6 +63,7 @@ flowchart TB
 
   Hooks --> CI
   CI --> CD
+  GHCR --> SIGN --> SBOM
   Renovate --> CI
   Dependabot --> CI
 ```
@@ -120,8 +123,8 @@ flowchart TD
       TF_GH["Terraform (GitHub provider)"] --|apply|--> GHS["GitHub repository settings"]
     end
     subgraph terraform-envs["infra/environments"]
-      TF_STG["Terraform (stg)"] --|plan/apply|--> CLOUD_STG["Cloud (stg)"]
-      TF_PRD["Terraform (prd)"] --|plan/apply|--> CLOUD_PRD["Cloud (prd)"]
+      TF_STG["Terraform (stg)"] --|plan (PR comment)/apply|--> CLOUD_STG["Cloud (stg)"]
+      TF_PRD["Terraform (prd)"] --|plan (PR comment)/apply|--> CLOUD_PRD["Cloud (prd)"]
     end
   end
 ```
