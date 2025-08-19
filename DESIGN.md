@@ -102,6 +102,7 @@ flowchart LR
 - 依存インストールを分離し、レイヤキャッシュを最大化。
 - Compose で BuildKit のローカルキャッシュ（`.docker-cache`）を利用。
 - Bun 1.2 以降は `bun.lock` を使用。
+- GHCR へのタグは Actions 側で `owner/repo` を小文字化して生成（Docker の命名規則に準拠）。
 
 ## インフラ/IaC（GitHub 設定）
 
