@@ -37,11 +37,11 @@ flowchart TB
 
   subgraph CI
     L[Biome]
-    MD[Markdown Lint]
-    TSC[Type Check]
-    UT["Unit Test bun test"]
-    B[Build Check]
-    V[Trivy Scan]
+    MD[Markdownlint]
+    TSC[Type Check (tsc)]
+    UT["Unit Test (bun test)"]
+    B[Build]
+    V[Trivy]
     CL[Commitlint]
   end
 
