@@ -161,14 +161,16 @@ web-template/
 │   ├── branch.ts
 │   └── quick-commit.ts
 ├── src/
-│   ├── app/
-│   │   └── page.tsx
+│   ├── backend/
+│   │   └── server.ts
 │   ├── components/
 │   │   └── README.md
-│   ├── lib/
-│   │   ├── hello.ts
-│   │   └── hello.test.ts
-│   └── server.ts
+│   ├── frontend/
+│   │   └── app/
+│   │       └── page.tsx
+│   └── lib/
+│       ├── hello.ts
+│       └── hello.test.ts
 ├── .commitlintrc.json
 ├── .czrc
 ├── .dockerignore

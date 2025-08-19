@@ -5,9 +5,11 @@ on:
 jobs:
   label:
     runs-on: ubuntu-latest
+    continue-on-error: true
     permissions:
       contents: read
       pull-requests: write
+      issues: write
     steps:
       - name: Checkout PR HEAD
         uses: actions/checkout@v4
@@ -17,3 +19,4 @@ jobs:
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           configuration-path: .github/labeler.yml
+          dot: true

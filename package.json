@@ -9,7 +9,7 @@
     "dev": "bun run test:watch",
     "build": "echo 'no UI framework selected yet' && exit 0",
     "start": "bun run server",
-    "server": "bun src/server.ts",
+    "server": "bun src/backend/server.ts",
     "lint": "bun x @biomejs/biome ci .",
     "lint:fix": "bun x @biomejs/biome check --apply .",
     "typecheck": "tsc --noEmit",

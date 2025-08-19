@@ -190,8 +190,8 @@ bun run typecheck
 # リンターの実行
 bun run lint
 
-# 開発サーバーの起動
-bun run dev
+# 開発サーバーの起動（バックエンド）
+bun run start
 ```
 
 ## 4. トラブルシューティング

@@ -43,6 +43,8 @@ variable "labels" {
     "area:ci"           = { color = "#d73a4a", description = "CI/CD and workflows" }
     "area:infra"        = { color = "#0e8a16", description = "Infrastructure / Terraform" }
     "area:frontend"     = { color = "#5319e7", description = "Frontend source changes" }
+    "area:backend"      = { color = "#0052cc", description = "Backend (server, API)" }
+    "area:shared"       = { color = "#6a737d", description = "Shared libraries/components" }
     "area:deps"         = { color = "#fbca04", description = "Dependencies updates" }
     "area:docker"       = { color = "#1d76db", description = "Docker / Compose" }
     "area:devcontainer" = { color = "#0e8a16", description = "Dev Containers" }
