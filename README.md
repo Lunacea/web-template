@@ -201,37 +201,28 @@ bun run typecheck
 bun run test
 ```
 
-### 3. Commit & Push
+### 3. コミット・プッシュ
 
 ```bash
-# Quick commit (Conventional Commits)
-bun run commit:quick "feat: add hello world function"
+# Conventional Commits 準拠
+git add -A
+git commit -m "feat: add hello world function"
 git push -u origin HEAD
 ```
 
-### 4. PR & Review
+### 4. PR 作成・レビュー
 
-- Create PR with tools:
-  - `bun run pr:new`（requires `gh`）
-  - or `bun run gh:flow` to create Issue → Branch → PR in one go
-- CI runs as defined in `.github/workflows/ci.yml`:
-  - Lint/Format: `bunx biome ci .`
-  - Markdownlint: `bun run md:lint`
-  - Type Check: `bun run typecheck`
-  - Unit Test: `bun test`
-  - Build: `bun run build`
-  - Trivy: `aquasecurity/trivy-action@0.26.0`
-- Merge after review approvals
+- GitHub で PR を作成
+- CI が自動実行（Biome、Markdown Lint、Type Check、Test、Build、Trivy、Commitlint）
+- レビュー承認後にマージ
 
-### 5. Continuous Delivery
+### 5. 自動デプロイ
 
-- Trigger: merge to `main` (see `.github/workflows/cd.yml`)
-- Steps:
-  - GHCR login: `docker/login-action@v3`
-  - Build & Push: `docker/build-push-action@v6` with lowercase tag
-  - Terraform: `terraform init` / `terraform apply` in `infra/environments/prd`
-  - Prisma (optional): `bunx prisma migrate deploy` if `secrets.DATABASE_URL`
-  - Release: `bunx semantic-release`
+- `main` ブランチへのマージで CD が起動
+- Docker Build & Push（GHCR）
+- Terraform Apply
+- Prisma migrate deploy
+- semantic-release による自動リリース
 
 ## Architecture
 
