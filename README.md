@@ -186,7 +186,7 @@ bun run md:lint:fix  # Markdown 自動修正
 - その他ワークフロー（`.github/workflows/`）
   - `codeql.yml`: CodeQL（PR + weekly schedule）
   - `secret-scan.yml`: gitleaks（PR/push）
-  - `tf-plan.yml`: Terraform plan（infra/github）
+  - `tf-plan.yml`: Terraform plan（infra/github, infra/environments/{stg, prd}）
 
 ## Architecture
 
@@ -247,6 +247,8 @@ Container / Build design を参照してください。
 - **Terraform Apply**: インフラ設定の適用
 - **Prisma migrate deploy**: データベースマイグレーション
 - **semantic-release**: 自動バージョニング・リリース
+- **Image signing (cosign)**: OIDC keyless 署名（latest/sha）
+- **SBOM (SPDX)**: Syft で生成しアーティファクトに保存
 
 ### 運用上の注意（GHCR 小文字化）
 
@@ -262,6 +264,7 @@ Container / Build design を参照してください。
 - **DATABASE_URL（任意）**: 設定されている場合のみ `Prisma migrate deploy` を実行します。
   - 未設定でも CD は失敗しません。
 - Secret Scan: `GITHUB_TOKEN` で動作（追加のシークレットは不要）。`GITLEAKS_LICENSE` は任意。
+- Cosign (keyless): 追加シークレット不要（`id-token: write` 権限を使用）。
 
 ## Operations (Issue/Branch/PR/Release)
 
