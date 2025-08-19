@@ -313,6 +313,36 @@ docker compose down
 - **Prisma migrate deploy**: データベースマイグレーション
 - **semantic-release**: 自動バージョニング・リリース
 
+### 運用上の注意（GHCR 小文字化）
+
+- GHCR へプッシュする Docker イメージ名は、GitHub の `owner/repo` をベースに自動生成します。
+  - Docker の制約により、リポジトリ名は小文字のみ許可されます。
+  - 本テンプレートでは `github.repository` を Bash で小文字化してからタグを生成します。
+  - Dockerfile 側の変更は不要です。
+
+### Secrets / Permissions
+
+- **GITHUB_TOKEN**: GitHub Actions が自動で提供（`packages: write` 権限で GHCR ログインに利用）。
+  - 通常は追加設定不要です。
+- **DATABASE_URL（任意）**: 設定されている場合のみ `Prisma migrate deploy` を実行します。
+  - 未設定でも CD は失敗しません。
+- **Terraform 用トークン（任意）**: `infra/github` の実行に管理権限が必要な場合、PAT を Secrets に追加してください（例: `TF_GITHUB_TOKEN`）。
+  - 必要に応じてワークフローの `GITHUB_TOKEN` 参照を切り替えてください。
+
+## 🧭 運用方法（ブランチ/PR/リリース）
+
+1. Issue を起票（任意）
+   - `bun run issue:new` で対話的に作成（要 GitHub CLI `gh`）。
+2. ブランチを作成
+   - 規約例: `feat/PROJ-123--add-xxx`, `fix/bug-slug`
+   - `bun run branch:new` で対話的に作成、または `bun run gh:flow` で Issue 作成〜ブランチ作成〜PR まで一括補助。
+3. 実装してコミット
+   - `bun run lint:fix`, `bun run typecheck`, `bun run test` を通す。
+4. PR を作成
+   - `bun run pr:new` で対話的に作成（または GitHub 上で作成）。
+5. マージ（main）
+   - CD が走り、GHCR へ push → Terraform → Prisma（任意）→ semantic-release が順に実行。
+
 ### GitHub リポジトリ設定の自動化
 
 `infra/github` で以下を自動化できます：

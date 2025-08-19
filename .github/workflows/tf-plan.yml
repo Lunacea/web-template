@@ -24,7 +24,7 @@ jobs:
       - name: Terraform Plan (no refresh)
         id: plan
         env:
-          GITHUB_TOKEN: ${{ secrets.TF_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: infra/github
         run: terraform plan -no-color -input=false -refresh=false -var "owner=${{ github.repository_owner }}" -var "repository=${{ github.event.repository.name }}" | tee plan.txt
       - name: Comment Plan
