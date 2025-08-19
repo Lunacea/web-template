@@ -295,15 +295,10 @@ docker compose down
 
 ## CI/CD
 
-### CI（Pull Request）
+### CI (Pull Request)
 
-- **Biome**: コードフォーマット・リンター
-- **Markdown Lint**: ドキュメント品質
-- **Type Check**: TypeScript 型チェック
-- **Unit Test**: `bun test` 実行
-- **Build Check**: ビルド成功確認
-- **Trivy Scan**: セキュリティ脆弱性スキャン
-- **Commitlint**: Conventional Commits 準拠確認
+- Biome, Markdownlint, Type Check (tsc), Unit Test (bun test), Build,
+  Trivy, Commitlint
 
 ### CD（main ブランチ）
 
@@ -330,20 +325,12 @@ docker compose down
 
 ## Operations (Issue/Branch/PR/Release)
 
-1. Issue を起票（任意）
-   - `bun run issue:new` で対話的に作成（要 GitHub CLI `gh`）。
-   - 代替: GitHub UI から作成。
-2. ブランチを作成
-   - 規約例: `feat/PROJ-123--add-xxx`, `fix/bug-slug`
-   - `bun run branch:new` で対話的に作成。
-   - 一括補助: `bun run gh:flow`（Issue → ブランチ → PR）。
-3. 実装してコミット
-   - `bun run lint:fix`, `bun run typecheck`, `bun run test` を通す。
-4. PR を作成
-   - `bun run pr:new` で対話的に作成（要 `gh`）。
-   - 代替: `gh pr create` 直接、または GitHub 上で作成。
-5. マージ（main）
-   - CD が走り、GHCR へ push → Terraform → Prisma（任意）→ semantic-release が順に実行。
+1. Issue: `bun run issue:new`（要 `gh`）または GitHub UI。
+2. Branch: `bun run branch:new`（命名: `type/<issue#>--<slug>`）。
+   - 一括補助: `bun run gh:flow`（Issue→Branch→PR）。
+3. Work: `bun run fix`（lint/type/test auto-fix）。必要なら `bun run typecheck`、`bun run test`。
+4. Pull Request: `bun run pr:new`（要 `gh`）または `gh pr create`/GitHub UI。
+5. Merge (main): CD 実行（GHCR push → Terraform → Prisma optional → semantic-release）。
 
 ### GitHub リポジトリ設定の自動化
 
@@ -396,35 +383,9 @@ bun add svelte
 
 よくある問題と解決方法は [PREREQUISITE.md](PREREQUISITE.md) の「トラブルシューティング」セクションを参照してください。
 
-### 段階的な導入ガイド
+### Staged guide
 
-#### フェーズ 1: 基本開発環境（必須）
-
-- [ ] 必須ツールのインストール
-- [ ] リポジトリのクローン
-- [ ] Dev Container での開発環境起動
-- [ ] 基本的な動作確認
-
-#### フェーズ 2: データベース・API（推奨）
-
-- [ ] PostgreSQL の起動
-- [ ] Prisma の設定
-- [ ] 基本的な CRUD 操作
-- [ ] API エンドポイントの実装
-
-#### フェーズ 3: CI/CD・インフラ（発展）
-
-- [ ] GitHub Actions の設定
-- [ ] Terraform でのインフラ管理
-- [ ] 自動デプロイの設定
-- [ ] 監視・ログの導入
-
-#### フェーズ 4: 高度な機能（オプション）
-
-- [ ] セキュリティ強化
-- [ ] パフォーマンス最適化
-- [ ] 国際化・アクセシビリティ
-- [ ] コンプライアンス対応
+詳細は [PREREQUISITE.md](PREREQUISITE.md) の staged guide を参照してください。
 
 ## References
 
