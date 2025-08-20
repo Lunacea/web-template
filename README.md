@@ -11,52 +11,52 @@
 [![Dev Containers](https://img.shields.io/badge/Dev%20Containers-ready-0078D4?logo=visualstudiocode&logoColor=white)](https://containers.dev/)
 [![License](https://img.shields.io/badge/License-UNLICENSED-lightgrey)](LICENSE)
 
-## 🚀 概要
+## 概要
 
 モダンなWebアプリ開発のための、**完全自動化を志向したTypeScriptプロジェクトテンプレート**です。
 
 **目標**: 開発者が `git clone` 後、ビジネスロジックの実装だけに集中できる環境を提供
 
-### ✨ 主要な特徴
+### 特徴
 
-- 🔥 **Bun + TypeScript**: 高速な開発環境
-- 🎯 **フレームワーク柔軟性**: React/Vue/Svelte を任意選択
-- 🐳 **Dev Containers**: 統一された開発環境
-- 🤖 **完全自動化**: CI/CD、リリース、依存更新
-- 🏗️ **IaC**: Terraform によるインフラ・GitHub設定自動化
-- 🎨 **品質保証**: Biome、Husky、commitlint
-- 📚 **包括的ドキュメント**: 初心者から上級者まで対応
+- **Bun + TypeScript**: 高速な開発環境
+- **フレームワーク柔軟性**: React/Vue/Svelte を任意選択
+- **Dev Containers**: 統一された開発環境
+- **完全自動化**: CI/CD、リリース、依存更新
+- **IaC**: Terraform によるインフラ・GitHub設定自動化
+- **品質保証**: Biome、Husky、commitlint
+- **包括的ドキュメント**: 初心者から上級者まで対応
 
-## 🛠️ 技術スタック
+## Stack
 
-### 基盤技術（固定）
+### Core stack
 
 ![Bun](https://img.shields.io/badge/Bun-1.2+-000000?logo=bun&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 
-### 開発環境・ツール
+### Tooling
 
 ![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?logo=visualstudiocode&logoColor=white)
 ![Dev Containers](https://img.shields.io/badge/Dev%20Containers-0078D4?logo=visualstudiocode&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)
 
-### 品質・自動化
+### Quality & automation
 
 ![Biome](https://img.shields.io/badge/code%20style-Biome-60a5fa?logo=biome)
 ![Husky](https://img.shields.io/badge/Husky-000000?logo=git&logoColor=white)
 ![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fc8d62)
 ![semantic-release](https://img.shields.io/badge/semantic--release-enabled-43b02a)
 
-### インフラ・CI/CD
+### Infrastructure & CI/CD
 
 ![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?logo=terraform&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white)
 
-## 📋 前提条件
+## Prerequisites
 
 詳細なセットアップ手順は [PREREQUISITE.md](PREREQUISITE.md) を参照してください。
 
@@ -72,16 +72,16 @@
 - **Bun**: 高速な JavaScript/TypeScript ランタイム
 - **Terraform**: インフラ・GitHub 設定の IaC
 
-## 🚀 クイックスタート
+## Quick start
 
-### 1. リポジトリのクローン
+### 1. Clone repository
 
 ```bash
 git clone <your-repo-url> web-template
 cd web-template
 ```
 
-### 2. Dev Container での開発環境起動（推奨）
+### 2. Dev Containers (recommended)
 
 ```bash
 # VS Code で「Reopen in Container」を実行
@@ -92,14 +92,14 @@ cd web-template
 # 完了まで数分待機してください
 ```
 
-### 3. 環境変数の設定
+### 3. Environment variables
 
 ```bash
 # .env ファイルを作成（Prisma 用の接続文字列）
 echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/app" > .env
 ```
 
-### 4. Docker でのデータベース起動
+### 4. Start database with Docker
 
 ```bash
 # Docker を起動（DB 用）
@@ -109,7 +109,7 @@ docker compose up -d --build
 docker compose ps
 ```
 
-### 5. Prisma の設定
+### 5. Prisma setup
 
 ```bash
 # Prisma クライアントの生成
@@ -119,7 +119,7 @@ bun run db:generate
 bun run db:migrate
 ```
 
-### 6. 動作確認
+### 6. Verify
 
 ```bash
 # テストの実行
@@ -131,18 +131,18 @@ bun run typecheck
 # リンターの実行
 bun run lint
 
-# 開発サーバーの起動
-bun run dev
+# サーバー起動（Bun サーバー）
+bun run start
 ```
 
-## 📚 主要コマンド
+## Commands
 
 ### 開発・ビルド
 
 ```bash
+bun run start        # サーバー起動（Bun サーバー）
+bun run build        # ビルド（テンプレート初期状態では no-op）
 bun run dev          # 開発サーバー起動
-bun run build        # ビルド実行
-bun run start        # 本番サーバー起動
 ```
 
 ### 品質チェック
@@ -165,8 +165,7 @@ bun run db:migrate   # マイグレーション実行
 ### Git 操作
 
 ```bash
-bun run commit       # 対話的コミット（Conventional Commits）
-bun run commit:quick # クイックコミット
+bun run commit:quick # クイックコミット（Conventional Commits 準拠）
 bun run branch:new   # ブランチ作成（命名規約準拠）
 ```
 
@@ -178,54 +177,18 @@ bun run md:lint      # Markdown リンター
 bun run md:lint:fix  # Markdown 自動修正
 ```
 
-## 🔄 開発フロー
+## Workflow
 
-### 1. ブランチ作成（命名規約準拠）
+詳細な運用フローは下記を参照してください。
 
-```bash
-# 機能追加
-git checkout -b feat/PROJ-123--hello-world
+- Operations (Issue/Branch/PR/Release)
+- CI/CD 定義（`.github/workflows/ci.yml`, `.github/workflows/cd.yml`）
+- その他ワークフロー（`.github/workflows/`）
+  - `codeql.yml`: CodeQL（PR + weekly schedule）
+  - `secret-scan.yml`: gitleaks（PR/push）
+  - `tf-plan.yml`: Terraform plan（infra/github, infra/environments/{stg, prd}）
 
-# バグ修正
-git checkout -b fix/login-error
-
-# ドキュメント更新
-git checkout -b docs/readme-update
-```
-
-### 2. 開発・テスト
-
-```bash
-# 実装後、品質チェック
-bun run lint:fix
-bun run typecheck
-bun run test
-```
-
-### 3. コミット・プッシュ
-
-```bash
-# Conventional Commits 準拠
-git add -A
-git commit -m "feat: add hello world function"
-git push -u origin HEAD
-```
-
-### 4. PR 作成・レビュー
-
-- GitHub で PR を作成
-- CI が自動実行（Biome、Markdown Lint、Type Check、Test、Build、Trivy、Commitlint）
-- レビュー承認後にマージ
-
-### 5. 自動デプロイ
-
-- `main` ブランチへのマージで CD が起動
-- Docker Build & Push（GHCR）
-- Terraform Apply
-- Prisma migrate deploy
-- semantic-release による自動リリース
-
-## 🏗️ アーキテクチャ
+## Architecture
 
 詳細な設計は [DESIGN.md](DESIGN.md) を参照してください。
 
@@ -239,72 +202,44 @@ web-template/
 ├── docker/                 # Docker 設定
 ├── infra/                  # Terraform 設定
 ├── prisma/                 # データベーススキーマ
-├── scripts/                # 開発効率化スクリプト
+├── tools/                  # 開発効率化スクリプト
 └── src/
     ├── backend/           # バックエンド（Bun サーバー等）
     └── frontend/          # フロントエンド（後で選択する UI フレームワーク）
 ```
 
-### 技術選択の指針
+### Stack policy
 
-#### 既定技術（固定）
+#### Core (fixed)
 
 - **ランタイム**: Bun、TypeScript
 - **開発環境**: Dev Containers、VS Code
 - **品質**: Biome、Husky、commitlint
 - **インフラ**: Docker、Terraform、GitHub Actions
 
-#### 柔軟技術（選択可能）
+#### Optional
 
 - **フロントエンド**: React/Vue/Svelte
 - **データベース**: PostgreSQL（デフォルト）、その他対応可能
 - **スタイリング**: Tailwind CSS（デフォルト）、その他対応可能
 
-#### 未決定技術（プロジェクト開始時に決定）
+#### TBD (decide at project start)
 
 - UI ライブラリ、状態管理、ルーティング
 - API フレームワーク、認証方式
 - クラウドプロバイダー、監視・ログ
 
-## 🐳 Docker / Compose
+## Docker / Compose（概要）
 
-### 開発環境での使用
+ローカルでは DB の起動に使用します。詳細は [DESIGN.md](DESIGN.md) の
+Container / Build design を参照してください。
 
-```bash
-# データベース起動
-docker compose up -d --build
+## CI/CD
 
-# 状況確認
-docker compose ps
-docker compose logs db
+### CI (Pull Request)
 
-# 停止
-docker compose down
-```
-
-### 設計方針
-
-- **Dev Container**: 統一された開発環境（Bun/TypeScript/ツール群）
-- **Docker Compose**: データベースとアプリケーションの起動
-- **本番ビルド**: GitHub Actions で BuildKit を使用
-
-### ビルド最適化
-
-- 依存インストールを分離（deps ステージ）
-- BuildKit のローカルキャッシュ（`.docker-cache`）
-- Bun 1.2+ の `bun.lock` 対応
-
-## 🔧 CI/CD
-
-### CI（Pull Request）
-
-- **Biome**: コードフォーマット・リンター
-- **Markdown Lint**: ドキュメント品質
-- **Type Check**: TypeScript 型チェック
-- **Unit Test**: `bun test` 実行
-- **Build Check**: ビルド成功確認
-- **Trivy Scan**: セキュリティ脆弱性スキャン
-- **Commitlint**: Conventional Commits 準拠確認
+- Biome, Markdownlint, Type Check (tsc), Unit Test (bun test), Build, Trivy,
+  Commitlint, CodeQL, Secret Scan (gitleaks)
 
 ### CD（main ブランチ）
 
@@ -312,6 +247,33 @@ docker compose down
 - **Terraform Apply**: インフラ設定の適用
 - **Prisma migrate deploy**: データベースマイグレーション
 - **semantic-release**: 自動バージョニング・リリース
+- **Image signing (cosign)**: OIDC keyless 署名（latest/sha）
+- **SBOM (SPDX)**: Syft で生成しアーティファクトに保存
+
+### 運用上の注意（GHCR 小文字化）
+
+- GHCR へプッシュする Docker イメージ名は、GitHub の `owner/repo` をベースに自動生成します。
+  - Docker の制約により、リポジトリ名は小文字のみ許可されます。
+  - 本テンプレートでは `github.repository` を Bash で小文字化してからタグを生成します。
+  - Dockerfile 側の変更は不要です。
+
+### Secrets / Permissions
+
+- **GITHUB_TOKEN**: GitHub Actions が自動で提供（`packages: write` 権限で GHCR ログインに利用）。
+  - 通常は追加設定不要です。
+- **DATABASE_URL（任意）**: 設定されている場合のみ `Prisma migrate deploy` を実行します。
+  - 未設定でも CD は失敗しません。
+- Secret Scan: `GITHUB_TOKEN` で動作（追加のシークレットは不要）。`GITLEAKS_LICENSE` は任意。
+- Cosign (keyless): 追加シークレット不要（`id-token: write` 権限を使用）。
+
+## Operations (Issue/Branch/PR/Release)
+
+1. Issue: `bun run issue:new`（要 `gh`）または GitHub UI。
+2. Branch: `bun run branch:new`（命名: `type/<issue#>--<slug>`）。
+   - 一括補助: `bun run gh:flow`（Issue→Branch→PR）。
+3. Work: `bun run fix`（lint/type/test auto-fix）。必要なら `bun run typecheck`、`bun run test`。
+4. Pull Request: `bun run pr:new`（要 `gh`）または `gh pr create`/GitHub UI。
+5. Merge (main): CD 実行（GHCR push → Terraform → Prisma optional → semantic-release）。
 
 ### GitHub リポジトリ設定の自動化
 
@@ -328,7 +290,7 @@ terraform -chdir=infra/github apply -auto-approve \
   -var='variables={"NODE_ENV"="production"}'
 ```
 
-## 🎨 フロントエンドフレームワーク導入
+## Front-end framework (optional)
 
 このテンプレートはフロントエンドフレームワークを後から選択できます。
 
@@ -353,60 +315,22 @@ bun add svelte
 
 詳細な手順は [PREREQUISITE.md](PREREQUISITE.md) の「段階的な導入ガイド」を参照してください。
 
-## 📖 ドキュメント
+## Documentation
 
 - **[PREREQUISITE.md](PREREQUISITE.md)**: セットアップ手順・トラブルシューティング
 - **[DESIGN.md](DESIGN.md)**: アーキテクチャ・設計方針・技術スタック定義
-- **[.ai-prompts/prompts.md](.ai-prompts/prompts.md)**: AI 開発支援プロンプト集
+- **[.ai-prompts/PROMPTS.md](.ai-prompts/PROMPTS.md)**: AI 開発支援プロンプト（Core Prompt / Context / Task-Specific Snippets / テンプレ作成ガイド）
 - **[tools/](tools/)**: 開発効率化ツール
 
-## 🆘 トラブルシューティング
+## Troubleshooting
 
 よくある問題と解決方法は [PREREQUISITE.md](PREREQUISITE.md) の「トラブルシューティング」セクションを参照してください。
 
-### 段階的な導入ガイド
+### Staged guide
 
-#### フェーズ 1: 基本開発環境（必須）
+詳細は [PREREQUISITE.md](PREREQUISITE.md) の staged guide を参照してください。
 
-- [ ] 必須ツールのインストール
-- [ ] リポジトリのクローン
-- [ ] Dev Container での開発環境起動
-- [ ] 基本的な動作確認
-
-#### フェーズ 2: データベース・API（推奨）
-
-- [ ] PostgreSQL の起動
-- [ ] Prisma の設定
-- [ ] 基本的な CRUD 操作
-- [ ] API エンドポイントの実装
-
-#### フェーズ 3: CI/CD・インフラ（発展）
-
-- [ ] GitHub Actions の設定
-- [ ] Terraform でのインフラ管理
-- [ ] 自動デプロイの設定
-- [ ] 監視・ログの導入
-
-#### フェーズ 4: 高度な機能（オプション）
-
-- [ ] セキュリティ強化
-- [ ] パフォーマンス最適化
-- [ ] 国際化・アクセシビリティ
-- [ ] コンプライアンス対応
-
-## 🤝 コントリビューション
-
-1. このリポジトリをフォーク
-2. 機能ブランチを作成（`feat/amazing-feature`）
-3. 変更をコミット（Conventional Commits 準拠）
-4. ブランチにプッシュ
-5. Pull Request を作成
-
-## 📄 ライセンス
-
-[UNLICENSED](LICENSE) - このプロジェクトはライセンスされていません。
-
-## 🔗 関連リンク
+## References
 
 - [Bun](https://bun.sh/) - JavaScript ランタイム
 - [TypeScript](https://www.typescriptlang.org/) - 静的型付け言語
