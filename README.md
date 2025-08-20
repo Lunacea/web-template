@@ -316,7 +316,7 @@ bun add svelte
 
 - **[PREREQUISITE.md](PREREQUISITE.md)**: セットアップ手順・トラブルシューティング
 - **[DESIGN.md](DESIGN.md)**: アーキテクチャ・設計方針・技術スタック定義
-- **[.ai-prompts/prompts.md](.ai-prompts/prompts.md)**: AI 開発支援プロンプト集
+- **[.ai-prompts/PROMPTS.md](.ai-prompts/PROMPTS.md)**: AI 開発支援プロンプト（Core Prompt / Context / Task-Specific Snippets / テンプレ作成ガイド）
 - **[tools/](tools/)**: 開発効率化ツール
 
 ## Troubleshooting
