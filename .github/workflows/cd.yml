@@ -15,15 +15,19 @@ jobs:
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
-      DATABASE_URL: null
+      DATABASE_URL: ""
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.1.20
+
+      - name: Normalize image name (lowercase)
+        shell: bash
+        run: echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -42,7 +46,33 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign images (cosign keyless)
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+          IMAGE_LATEST: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          IMAGE_SHA: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        run: |
+          cosign sign --yes $IMAGE_LATEST
+          cosign sign --yes $IMAGE_SHA
+
+      - name: Generate SBOM (SPDX) for images
+        run: |
+          bunx --yes @anchore/syft ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest -o spdx-json=sbom-latest.spdx.json || true
+          bunx --yes @anchore/syft ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} -o spdx-json=sbom-sha.spdx.json || true
+
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-spdx
+          path: |
+            sbom-latest.spdx.json
+            sbom-sha.spdx.json
+
       - name: Export DATABASE_URL for subsequent steps
+        if: ${{ secrets.DATABASE_URL != '' }}
         run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
 
       - name: Setup Terraform
@@ -57,10 +87,10 @@ jobs:
         run: terraform apply -auto-approve
 
       - name: Prisma Migrate Deploy
+        if: ${{ secrets.DATABASE_URL != '' }}
         run: bunx prisma migrate deploy
 
       - name: Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bunx semantic-release
-

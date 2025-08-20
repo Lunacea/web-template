@@ -2,32 +2,33 @@
 
 このプロジェクトを動かすための前提条件と、OS別のセットアップ手順をまとめます。対象OSは Windows / macOS / Linux です。
 
-## 1. 必須ツール
+## 1. Required tools
 
-### 基本ツール
+### Basics
 
 - **Git**: バージョン管理
 - **Docker**: コンテナ化（Windows/macOS は Docker Desktop、Linux は Docker Engine + docker compose plugin）
 - **VS Code**: 推奨エディタ
 - **Dev Containers 拡張**: 統一された開発環境
 
-### ランタイム・開発ツール
+### Runtime & development
 
 - **Bun**: 高速な JavaScript/TypeScript ランタイム
 - **Node.js**: Bun と併用可能（必要に応じて）
 
-### インフラ・CI/CD
+### Infrastructure & CI/CD
 
 - **Terraform**: インフラ・GitHub 設定の IaC
 - **GitHub アカウント**: GitHub Actions、リポジトリ管理
+- **GitHub CLI (gh)**: `tools/issue.ts`, `tools/pr.ts`, `tools/gh-flow.ts` で使用
 
-### 推奨 VS Code 拡張
+### Recommended VS Code extensions
 
 - 拡張は `.vscode/extensions.json` で自動提示されます（初回起動時にインストールを促されます）。
 - 主要な推奨拡張: Biome, Prisma, Tailwind CSS, Dev Containers, GitHub Actions,
   Terraform, Docker, Markdownlint, GitLens, Git Graph, Todo Tree など。
 
-## 2. ツール別インストール
+## 2. Installation
 
 ### 2.1 Docker
 
@@ -100,6 +101,32 @@ exec $SHELL -l && bun --version
 
 ### 2.5 Terraform
 
+### 2.6 GitHub CLI (gh) for tools
+
+```bash
+# [Windows]
+winget install --id GitHub.cli -e --source winget
+gh auth login  # GitHub にログイン
+
+# [macOS]
+brew install gh
+gh auth login
+
+# [Linux（Ubuntu系）]
+type -p curl >/dev/null || sudo apt install curl -y
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
+  sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+  https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update && sudo apt install gh -y
+gh auth login
+```
+
+`tools/issue.ts`, `tools/pr.ts`, `tools/gh-flow.ts` depend on `gh`.
+Run `gh auth login` before using them.
+
+また、`tools/pr.ts` は Bun 環境を前提としています（Bun の型定義は `tsconfig.json` で有効化済み）。
+
 ```bash
 # [Windows]
 winget install --id HashiCorp.Terraform -e --source winget
@@ -117,9 +144,9 @@ sudo apt-get update && sudo apt-get install -y terraform
 terraform -v
 ```
 
-## 3. 初回セットアップ（共通）
+## 3. First-time setup
 
-### ステップ 1: リポジトリのクローン
+### Step 1: Clone repository
 
 ```bash
 # リポジトリをクローン
@@ -131,7 +158,7 @@ pwd
 ls -la
 ```
 
-### ステップ 2: Dev Container での開発環境起動（推奨）
+### Step 2: Dev Containers (recommended)
 
 ```bash
 # VS Code で「Reopen in Container」を実行
@@ -142,7 +169,7 @@ ls -la
 # 完了まで数分待機してください
 ```
 
-### ステップ 3: 環境変数の設定
+### Step 3: Environment variables
 
 ```bash
 # .env ファイルを作成（Prisma 用の接続文字列）
@@ -152,7 +179,7 @@ echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/app" > .env
 cat .env
 ```
 
-### ステップ 4: Docker でのデータベース起動
+### Step 4: Start database with Docker
 
 ```bash
 # Docker を起動（DB 用）
@@ -165,7 +192,7 @@ docker compose ps
 docker compose logs db
 ```
 
-### ステップ 5: Prisma の設定
+### Step 5: Prisma setup
 
 ```bash
 # Prisma クライアントの生成
@@ -178,7 +205,7 @@ bun run db:migrate
 bunx prisma studio
 ```
 
-### ステップ 6: 動作確認
+### Step 6: Verify
 
 ```bash
 # テストの実行
@@ -194,11 +221,11 @@ bun run lint
 bun run start
 ```
 
-## 4. トラブルシューティング
+## 4. Troubleshooting
 
-### よくある問題と解決方法
+### Common issues
 
-#### Docker 関連
+#### Docker
 
 ```bash
 # Docker が起動していない場合
@@ -211,7 +238,7 @@ docker compose down
 docker compose up -d --build
 ```
 
-#### Dev Container 関連
+#### Dev Containers
 
 ```bash
 # Dev Container のビルドに失敗した場合
@@ -221,7 +248,7 @@ docker compose up -d --build
 # VS Code で「Dev Containers: Rebuild Container (No Cache)」を実行
 ```
 
-#### Bun 関連
+#### Bun
 
 ```bash
 # bun コマンドが見つからない場合
@@ -233,7 +260,7 @@ which bun
 exec $SHELL -l
 ```
 
-#### データベース接続エラー
+#### Database connectivity
 
 ```bash
 # PostgreSQL の起動確認
@@ -243,21 +270,23 @@ docker compose ps db
 docker compose exec db psql -U postgres -d app -c "SELECT 1;"
 ```
 
-## 5. GitHub Actions / Terraform の前提
+## 5. GitHub Actions / Terraform
 
-### GitHub シークレットの設定（共通）
+### GitHub secrets (common)
 
 ```bash
 # GitHub リポジトリの Settings > Secrets and variables > Actions で以下を設定
-# DATABASE_URL: 本番/ステージング環境のデータベース接続文字列
-# GITHUB_TOKEN: リポジトリ管理権限を持つ Personal Access Token
+# DATABASE_URL: 本番/ステージング環境のデータベース接続文字列（任意）
+# GITHUB_TOKEN: Actions 既定トークン。GHCR push/リリースに使用（通常は追加設定不要）
+# Secret Scan (gitleaks): 追加設定不要（GITHUB_TOKEN を使用）。
 ```
 
-### Terraform の設定（環境別）
+### Terraform (by environment)
 
 ```bash
 # 現状は placeholder（infra/environments/{stg,prd}）
 # 利用クラウドのプロバイダ設定と認証情報を追加してください
+# PR に plan をコメントするジョブを実装済み（`tf-plan.yml`）。承認後に apply を行う運用を推奨。
 
 # ローカルでの Terraform 実行例
 cd infra/environments/stg
@@ -272,7 +301,7 @@ terraform plan
 terraform apply -auto-approve
 ```
 
-### GitHub リポジトリ設定（Terraform・例）
+### GitHub repository settings (Terraform example)
 
 ```bash
 # リポジトリ自体の設定は infra/github で自動化できます
@@ -327,7 +356,7 @@ terraform -chdir=infra/github apply -auto-approve \
 1. **README.md**: プロジェクトの概要と使用方法
 2. **DESIGN.md**: アーキテクチャと設計方針
 3. **.ai-prompts/prompts.md**: AI 開発支援のためのプロンプト集
-4. **scripts/**: 開発効率化のためのスクリプト
+4. **tools/**: 開発効率化スクリプト（`branch.ts`, `issue.ts`, `pr.ts`, `gh-flow.ts`, `quick-commit.ts`, `fix.ts`）
 
 ## 8. サポート・リソース
 
