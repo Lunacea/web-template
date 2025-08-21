@@ -21,6 +21,19 @@ body:
         - label: refactor
         - label: test
         - label: chore / ci / build / perf
+  - type: textarea
+    id: testing
+    attributes:
+      label: Testing instructions
+      description: How to verify the change locally/CI.
+      value: |
+        - 
+        - 
+  - type: textarea
+    id: risk
+    attributes:
+      label: Risk / Impact (optional)
+      description: Potential impact and mitigation.
   - type: input
     id: issues
     attributes:
