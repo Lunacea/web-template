@@ -1,21 +1,21 @@
 name: Bug report
-description: バグの報告
+description: Report a bug to help us improve
 labels: [bug]
-title: "fix: <短い要約>"
+title: "fix: <short summary>"
 body:
   - type: textarea
     id: summary
     attributes:
-      label: 概要
-      description: 何が問題かを簡潔に
-      placeholder: 期待した動作と実際の動作
+      label: Summary
+      description: What is the problem?
+      placeholder: Expected vs actual behavior
     validations:
       required: true
   - type: textarea
     id: reproduce
     attributes:
-      label: 再現手順
-      description: 再現方法を箇条書きで
+      label: Steps to reproduce
+      description: Provide numbered steps
       value: |
         1. 
         2. 
@@ -25,16 +25,16 @@ body:
   - type: textarea
     id: env
     attributes:
-      label: 環境情報
-      description: OS/ランタイム/ブラウザなど
+      label: Environment
+      description: OS/runtime/browser etc.
       value: |
-        - OS: 
-        - Bun: 
-        - Node (必要なら): 
-        - Docker: 
+        - OS:
+        - Bun:
+        - Node (if applicable):
+        - Docker:
   - type: textarea
     id: logs
     attributes:
-      label: ログ/スクリーンショット
+      label: Logs / Screenshots
       render: shell
 
